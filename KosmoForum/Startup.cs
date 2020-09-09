@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using KosmoForum.DbContext;
 using KosmoForum.Mapper;
+using KosmoForum.Repository;
+using KosmoForum.Repository.IRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,9 +34,14 @@ namespace KosmoForum
             services.AddDbContext<ApplicationDbContext>(options => options
                 .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); // Dodawanie contextu (Entity Framework)
 
+            services.AddScoped<ICategoryRepo, CategoryRepo>();
+            services.AddScoped<IForumPostRepo, ForumPostRepo>();
+            services.AddScoped<IOpinionRepo, OpinionRepo>();
+
             services.AddAutoMapper(typeof(KosmoMapping)); // Dodawanie automappera 
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

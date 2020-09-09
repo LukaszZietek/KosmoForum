@@ -25,8 +25,8 @@ namespace KosmoForum.DbContext
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ForumPost>()
                 .HasMany(frm => frm.Images).WithOne(frm => frm.ForumPost).OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<ForumPost>()
-                .HasMany(x => x.Opinions).WithOne(x => x.ForumPost).OnDelete(DeleteBehavior.NoAction);
+            //modelBuilder.Entity<ForumPost>()
+            //    .HasMany(x => x.Opinions).WithOne(x => x.ForumPost).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<User>()
                 .HasMany(x => x.Images).WithOne(x => x.User).OnDelete(DeleteBehavior.NoAction);
             
