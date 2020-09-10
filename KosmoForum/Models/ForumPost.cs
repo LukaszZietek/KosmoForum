@@ -21,7 +21,6 @@ namespace KosmoForum.Models
         [MinLength(5, ErrorMessage = "Za krótki opis zabiegu")]
         public string Content { get; set; }
 
-        [Required]
         public DateTime Date { get; set; }
 
         [ForeignKey("UserId")]

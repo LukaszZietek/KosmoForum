@@ -9,6 +9,7 @@ namespace KosmoForum.Repository.IRepository
     public interface IForumPostRepo
     {
         ForumPost GetPost(int id);
+        ForumPost GetPost(string title);
         ICollection<ForumPost> GetAllPosts();
         ICollection<ForumPost> GetAllForumPostsInCategory(int categoryId);
 

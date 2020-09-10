@@ -25,6 +25,13 @@ namespace KosmoForum.Repository
             return value;
         }
 
+        public ForumPost GetPost(string title)
+        {
+            var value = _db.ForumPosts.Include(x => x.Opinions).Include(x => x.Images)
+                .FirstOrDefault(x => x.Title.Trim().ToLower() == title.Trim().ToLower());
+            return value;
+        }
+
         public ICollection<ForumPost> GetAllPosts()
         {
             return _db.ForumPosts.OrderBy(x => x.Title).ToList();

@@ -31,8 +31,10 @@ namespace KosmoForum.Repository
 
         public ICollection<Opinion> GetAllOpinionsInPost(int forumPostId)
         {
-            var values = _db.Opinions.Where(x => x.ForumPostId == forumPostId)
-                .Include(x => x.User).ToList();
+            //var values = _db.Opinions.Where(x => x.ForumPostId == forumPostId)
+            //    .Include(x => x.User).ToList();
+            var values = _db.Opinions
+                .Where(x => x.ForumPostId == forumPostId).ToList();
 
             return values;
         }

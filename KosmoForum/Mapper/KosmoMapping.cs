@@ -12,9 +12,26 @@ namespace KosmoForum.Mapper
     {
         public KosmoMapping()
         {
+            //--------------------------CATEGORY------------------------------------------------
             CreateMap<Category,CategoryDto>().ReverseMap();
             CreateMap<Category,CategoryCreateDto>().ReverseMap();
+            CreateMap<Category, CategoryUpdateDto>().ReverseMap();
+            //----------------------------------------------------------------------------------
+
+
+            //--------------------------FORUM POST----------------------------------------------
             CreateMap<ForumPost, ForumPostDto>().ReverseMap();
+            CreateMap<ForumPost, ForumPostCreateDto>().ReverseMap();
+            CreateMap<ForumPost, ForumPostUpdateDto>().ReverseMap();
+            //----------------------------------------------------------------------------------
+
+
+
+            //--------------------------Opinion-------------------------------------------------
+            CreateMap<Opinion, OpinionDto>().ReverseMap();
+            CreateMap<Opinion, OpinionCreateDto>().ReverseMap();
+            CreateMap<Opinion, OpinionUpdateDto>().ReverseMap();
+            //----------------------------------------------------------------------------------
         }
     }
 }

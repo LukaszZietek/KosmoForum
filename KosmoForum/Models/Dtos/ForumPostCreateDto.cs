@@ -7,21 +7,24 @@ using System.Threading.Tasks;
 
 namespace KosmoForum.Models.Dtos
 {
-    public class ForumPostDto
+    public class ForumPostCreateDto
     {
+        
+        [Required]
+        [MinLength(3, ErrorMessage = "Nazwa postu jest za krótka")]
+        [MaxLength(256, ErrorMessage = "Nazwa postu jest za długa")]
         public string Title { get; set; }
 
+        [Required]
+        [MinLength(5, ErrorMessage = "Za krótki opis zabiegu")]
         public string Content { get; set; }
 
-        public DateTime Date { get; set; }
-        
+        [Required]
         public int UserId { get; set; }
 
+        [Required]
         public int CategoryId { get; set; }
 
-        public  List<OpinionDto> Opinions { get; set; }
-        public  List<Image> Images { get; set; }
-
-
+        public List<Image> Images { get; set; }
     }
 }

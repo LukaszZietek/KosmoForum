@@ -1,0 +1,2 @@
+W kontrolerach pobieranie (postów, opinii itd dla danego użytkownika), w modelach po
+dodaniu autoryzacji użytkownika usunąć UserId i pobierać automatycznie.

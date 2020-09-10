@@ -23,11 +23,11 @@ namespace KosmoForum.Models
 
         public MarksType Marks { get; set; }
 
-        [ForeignKey("ForumPostId")]
+        [Required]
         public int ForumPostId { get; set; }
 
-        //[ForeignKey("ForumPostId")]
-        //public virtual ForumPost ForumPost { get; set; }
+        [ForeignKey("ForumPostId")]
+        public virtual ForumPost ForumPost { get; set; }
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }

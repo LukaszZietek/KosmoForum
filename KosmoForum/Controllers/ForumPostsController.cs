@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using KosmoForum.Models;
 using KosmoForum.Models.Dtos;
 using KosmoForum.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
@@ -43,7 +44,7 @@ namespace KosmoForum.Controllers
 
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetForumPost")]
         public IActionResult GetForumPost(int id)
         {
             var obj = _repo.GetPost(id);
@@ -72,6 +73,96 @@ namespace KosmoForum.Controllers
             }
 
             return Ok(forumPostDtos);
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateForumPost([FromBody] ForumPostCreateDto forumPostDto)
+        {
+            if (forumPostDto == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_repo.ForumPostIfExist(forumPostDto.Title))
+            {
+                ModelState.AddModelError("","Post with this title already exists");
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var forumPost = _mapper.Map<ForumPost>(forumPostDto);
+            forumPost.Date = DateTime.Now;
+
+            if (!_repo.CreateForumPost(forumPost))
+            {
+                ModelState.AddModelError("",$"Error occurred during saving object with title: {forumPost.Title}");
+                return StatusCode(500, ModelState);
+            }
+
+            return CreatedAtRoute("GetForumPost", new {id = forumPost.Id}, forumPost);
+
+        }
+
+        [HttpPatch("{id:int}")]
+        public IActionResult UpdateForumPost(int id, [FromBody] ForumPostUpdateDto forumPostDto)
+        {
+            if (forumPostDto == null || id != forumPostDto.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var obj = _repo.GetPost(forumPostDto.Title);
+            if (obj != null) // Sprawdzanie czy tytuł po zmianie dalej będzie unikalny
+            {
+                if (obj.Id != forumPostDto.Id)
+                {
+                    ModelState.AddModelError("", "Category with this title already exists");
+                    return BadRequest(ModelState);
+                }
+            }
+
+
+            var forumPost = _mapper.Map<ForumPost>(forumPostDto);
+            forumPost.Date = DateTime.Now;
+
+            if (!_repo.UpdateForumPost(forumPost))
+            {
+                ModelState.AddModelError("", $"Error occurred during updating post with title: {forumPost.Title}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult DeleteForumPost(int id)
+        {
+            if (!_repo.ForumPostIfExist(id))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var forumObj = _repo.GetPost(id);
+            if (!_repo.DeleteForumPost(forumObj))
+            {
+                ModelState.AddModelError("",$"Error occurred during deleting object with title: {forumObj.Title}");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+
+
         }
 
 
