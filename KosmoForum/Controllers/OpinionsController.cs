@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace KosmoForum.Controllers
 {
-    [Route("api/Opinions")]
+    [Route("api/v{version:apiVersion}/Opinions")]
     [ApiController]
+    [ProducesResponseType(400)]
     public class OpinionsController : ControllerBase
     {
         private readonly IOpinionRepo _repo;
@@ -25,7 +26,17 @@ namespace KosmoForum.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Get Opinion by Id
+        /// </summary>
+        /// <param name="id">Opinion Id</param>
+        /// <returns></returns>
+
         [HttpGet("{id:int}",Name ="GetOpinion")]
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(OpinionDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+
         public IActionResult GetOpinion(int id)
         {
             var obj = _repo.GetOpinion(id);
@@ -37,8 +48,14 @@ namespace KosmoForum.Controllers
             var objDto = _mapper.Map<OpinionDto>(obj);
             return Ok(objDto);
         }
-
-        [HttpGet]
+        /// <summary>
+        /// Get all opinions
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "GetOpinions")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(OpinionDto))]
+        [ProducesDefaultResponseType]
         public IActionResult GetOpinions()
         {
             var listObj = _repo.GetAllOpinions();
@@ -56,7 +73,16 @@ namespace KosmoForum.Controllers
             return Ok(opinionDtos);
         }
 
-        [HttpGet("[action]/{forumPostId:int}")]
+        /// <summary>
+        /// Get all opinion in specific forum post
+        /// </summary>
+        /// <param name="forumPostId">Forum post's id</param>
+        /// <returns></returns>
+
+        [HttpGet("[action]/{forumPostId:int}", Name = "GetOpinionsInForumPost")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(200,Type = typeof(OpinionDto))]
+        [ProducesDefaultResponseType]
         public IActionResult GetOpinionsInForumPost(int forumPostId)
         {
             var obj = _repo.GetAllOpinionsInPost(forumPostId);
@@ -72,8 +98,16 @@ namespace KosmoForum.Controllers
 
             return Ok(opinionDtos);
         }
-
-        [HttpPost]
+        /// <summary>
+        /// Create opinion
+        /// </summary>
+        /// <param name="opinionCreateObj">Opinion object</param>
+        /// <returns></returns>
+        [HttpPost(Name = "CreateOpinion")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Opinion))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public IActionResult CreateOpinion([FromBody] OpinionCreateDto opinionCreateObj)
         {
             if (opinionCreateObj == null)
@@ -94,10 +128,20 @@ namespace KosmoForum.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtRoute("GetOpinion", new {id = opinion.Id}, opinion);
+            return CreatedAtRoute("GetOpinion", new {Version = HttpContext.GetRequestedApiVersion().ToString() ,id = opinion.Id}, opinion);
         }
 
-        [HttpPatch("{id:int}")]
+        /// <summary>
+        /// Update already existing opinion
+        /// </summary>
+        /// <param name="id">Opinion Id</param>
+        /// <param name="opinionUpdateObj">Opinion Object</param>
+        /// <returns></returns>
+        [HttpPatch("{id:int}",Name = "UpdateOpinion")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
         public IActionResult UpdateOpinion(int id,[FromBody] OpinionUpdateDto opinionUpdateObj)
         {
             if (opinionUpdateObj == null || id != opinionUpdateObj.Id)
@@ -123,7 +167,16 @@ namespace KosmoForum.Controllers
 
         }
 
-        [HttpDelete("{id:int}")]
+        /// <summary>
+        /// Delete already existing opinion
+        /// </summary>
+        /// <param name="id">Opinion Id</param>
+        /// <returns></returns>
+        [HttpDelete("{id:int}",Name = "DeleteOpinion")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesDefaultResponseType]
         public IActionResult DeleteOpinion(int id)
         {
             if (!_repo.OpinionIfExist(id))

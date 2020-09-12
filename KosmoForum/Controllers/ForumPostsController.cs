@@ -11,8 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForum.Controllers
 {
-    [Route("api/ForumPosts")]
+    [Route("api/v{version:apiVersion}/ForumPosts")]
     [ApiController]
+    [ProducesResponseType(400)]
     public class ForumPostsController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -24,7 +25,13 @@ namespace KosmoForum.Controllers
             _repo = repo;
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Get all forum posts
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(List<ForumPostDto>))]
+        [HttpGet(Name = "GetForumPosts")]
         public IActionResult GetForumPosts()
         {
             var objList = _repo.GetAllPosts();
@@ -44,7 +51,16 @@ namespace KosmoForum.Controllers
 
         }
 
+        /// <summary>
+        /// Get forum post with specific id
+        /// </summary>
+        /// <param name="id">forum post's id</param>
+        /// <returns></returns>
+
         [HttpGet("{id}", Name = "GetForumPost")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(200,Type =typeof(ForumPostDto))]
+        [ProducesDefaultResponseType]
         public IActionResult GetForumPost(int id)
         {
             var obj = _repo.GetPost(id);
@@ -57,7 +73,17 @@ namespace KosmoForum.Controllers
             return Ok(forumPostDto);
         }
 
-        [HttpGet("[action]/{categoryId:int}")]
+
+        /// <summary>
+        /// Get all forum posts in specific category
+        /// </summary>
+        /// <param name="categoryId">Category Id</param>
+        /// <returns></returns>
+        [HttpGet("[action]/{categoryId:int}",Name = "GetForumPostsInCategory")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(200,Type = typeof(ForumPostDto))]
+        [ProducesDefaultResponseType]
+
         public IActionResult GetForumPostsInCategory(int categoryId)
         {
             var forumPosts = _repo.GetAllForumPostsInCategory(categoryId);
@@ -75,8 +101,15 @@ namespace KosmoForum.Controllers
             return Ok(forumPostDtos);
         }
 
-
-        [HttpPost]
+        /// <summary>
+        /// Create forum post
+        /// </summary>
+        /// <param name="forumPostDto">Forum post object</param>
+        /// <returns></returns>
+        [HttpPost(Name = "CreateForumPost")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public IActionResult CreateForumPost([FromBody] ForumPostCreateDto forumPostDto)
         {
             if (forumPostDto == null)
@@ -87,7 +120,7 @@ namespace KosmoForum.Controllers
             if (_repo.ForumPostIfExist(forumPostDto.Title))
             {
                 ModelState.AddModelError("","Post with this title already exists");
-                return BadRequest(ModelState);
+                return StatusCode(404,ModelState);
             }
 
             if (!ModelState.IsValid)
@@ -104,11 +137,19 @@ namespace KosmoForum.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtRoute("GetForumPost", new {id = forumPost.Id}, forumPost);
+            return CreatedAtRoute("GetForumPost", new {Version = HttpContext.GetRequestedApiVersion().ToString(), id = forumPost.Id}, forumPost);
 
         }
-
-        [HttpPatch("{id:int}")]
+        /// <summary>
+        /// Update already existing forum post
+        /// </summary>
+        /// <param name="id">Post Id</param>
+        /// <param name="forumPostDto">Post Object</param>
+        /// <returns></returns>
+        [HttpPatch("{id:int}",Name = "UpdateForumPost")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateForumPost(int id, [FromBody] ForumPostUpdateDto forumPostDto)
         {
             if (forumPostDto == null || id != forumPostDto.Id)
@@ -145,7 +186,15 @@ namespace KosmoForum.Controllers
 
         }
 
-        [HttpDelete("{id:int}")]
+        /// <summary>
+        /// Delete already existing forum post
+        /// </summary>
+        /// <param name="id">Forum post id</param>
+        /// <returns></returns>
+        [HttpDelete("{id:int}", Name = "DeleteForumPost")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult DeleteForumPost(int id)
         {
             if (!_repo.ForumPostIfExist(id))

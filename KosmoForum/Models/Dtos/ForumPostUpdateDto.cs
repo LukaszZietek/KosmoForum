@@ -27,7 +27,7 @@ namespace KosmoForum.Models.Dtos
         [Required]
         public int CategoryId { get; set; }
 
-        public List<Image> Images { get; set; }
+        public List<ImageDto> Images { get; set; }
 
     }
 }

@@ -32,6 +32,12 @@ namespace KosmoForum.Mapper
             CreateMap<Opinion, OpinionCreateDto>().ReverseMap();
             CreateMap<Opinion, OpinionUpdateDto>().ReverseMap();
             //----------------------------------------------------------------------------------
+
+            //--------------------------Image---------------------------------------------------
+            CreateMap<Image, ImageDto>().ReverseMap();
+            CreateMap<Image, ImageCreateDto>().ReverseMap();
+
+            //----------------------------------------------------------------------------------
         }
     }
 }

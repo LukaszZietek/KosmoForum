@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using KosmoForum.Models;
 using KosmoForum.Models.Dtos;
 using KosmoForum.Repository.IRepository;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForum.Controllers
 {
     [ApiController]
-    [Route("api/Categories")]
+    [Route("api/v{version:apiVersion}/Categories")]
+    [ProducesResponseType(400)]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryRepo _repo;
@@ -22,7 +25,14 @@ namespace KosmoForum.Controllers
             _repo = repo;
         }
 
-        [HttpGet]
+        /// <summary>
+        /// Get list of available categories
+        /// </summary>
+        /// <returns></returns>
+
+        [HttpGet(Name = "GetCategories")]
+        [ProducesResponseType(200,Type = typeof(List<CategoryDto>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCategories()
         {
             var categories = _repo.GetAllCategories();
@@ -40,6 +50,14 @@ namespace KosmoForum.Controllers
             return Ok(objDtos);
         }
 
+        /// <summary>
+        /// Get category with specific id
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(CategoryDto))]
+        [ProducesDefaultResponseType]
         [HttpGet("{id:int}", Name = "GetCategory")]
         public IActionResult GetCategory(int id)
         {
@@ -53,7 +71,17 @@ namespace KosmoForum.Controllers
             return Ok(objDto);
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Create a category
+        /// </summary>
+        /// <param name="categoryDto">Category object which should be create</param>
+        /// <returns></returns>
+
+        [HttpPost(Name = "CreateCategory")]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Category))]
+        [ProducesResponseType(404)]
+        [ProducesDefaultResponseType]
         public IActionResult CreateCategory([FromBody] CategoryCreateDto categoryDto)
         {
             if (categoryDto == null)
@@ -64,7 +92,7 @@ namespace KosmoForum.Controllers
             if (_repo.CategoryExists(categoryDto.Title))
             {
                 ModelState.AddModelError("","Category with this title already exists");
-                return BadRequest(ModelState);
+                return StatusCode(404, ModelState);
             }
 
             if (!ModelState.IsValid)
@@ -80,11 +108,21 @@ namespace KosmoForum.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return CreatedAtRoute("GetCategory", new {id = categoryObj.Id}, categoryObj);
+            return CreatedAtRoute("GetCategory", new {Version = HttpContext.GetRequestedApiVersion().ToString() ,id = categoryObj.Id}, categoryObj);
 
         }
 
-        [HttpPatch("{id}")]
+        /// <summary>
+        /// Update the previous created category
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <param name="categoryUpdateDto">Category Object</param>
+        /// <returns></returns>
+
+        [HttpPatch("{id}",Name = "UpdateCategory")]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(404)]
         public IActionResult UpdateCategory(int id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
             if (categoryUpdateDto == null || categoryUpdateDto.Id != id)
@@ -121,7 +159,17 @@ namespace KosmoForum.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// Delete previous created category
+        /// </summary>
+        /// <param name="id">Category Id</param>
+        /// <returns></returns>
+
+        [HttpDelete("{id}", Name = "DeleteCategory")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(500)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public IActionResult DeleteCategory(int id)
         {
             if (!_repo.CategoryExists(id))

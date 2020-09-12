@@ -12,8 +12,8 @@ namespace KosmoForum.Models
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(256,ErrorMessage = "Za długa nazwa kategorii")]
-        [MinLength(2,ErrorMessage = "Za krótka nazwa kategorii")]
+        [MaxLength(256, ErrorMessage = "Category name is too long...")]
+        [MinLength(2, ErrorMessage = "Category name doesn't have enough char")]
         public string Title { get; set; }
 
         public string Description { get; set; }

@@ -11,11 +11,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace KosmoForum
 {
@@ -38,6 +41,20 @@ namespace KosmoForum
             services.AddScoped<IForumPostRepo, ForumPostRepo>();
             services.AddScoped<IOpinionRepo, OpinionRepo>();
 
+
+
+            services.AddApiVersioning(options => // Dodawanie wersjonowania API
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.ReportApiVersions = true;
+            });
+            services.AddVersionedApiExplorer(option => option.GroupNameFormat = "'v'VVV"); // Format grup wersjonowania
+
+
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+            services.AddSwaggerGen(); // Dodanie swaggera
+
             services.AddAutoMapper(typeof(KosmoMapping)); // Dodawanie automappera 
 
             services.AddControllers().AddNewtonsoftJson(options =>
@@ -45,7 +62,7 @@ namespace KosmoForum
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -53,6 +70,18 @@ namespace KosmoForum
             }
 
             app.UseHttpsRedirection();
+            app.UseSwagger(); // Dodanie swaggera
+
+            app.UseSwaggerUI(option => // Dodawanie UI swaggera
+            {
+                foreach (var item in provider.ApiVersionDescriptions)
+                {
+                    option.SwaggerEndpoint($"/swagger/{item.GroupName}/swagger.json",
+                        item.GroupName.ToUpperInvariant());
+                }
+
+                option.RoutePrefix = "";
+            });
 
             app.UseRouting();
 

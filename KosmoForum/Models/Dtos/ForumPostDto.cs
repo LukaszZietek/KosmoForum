@@ -20,7 +20,7 @@ namespace KosmoForum.Models.Dtos
         public int CategoryId { get; set; }
 
         public  List<OpinionDto> Opinions { get; set; }
-        public  List<Image> Images { get; set; }
+        public  List<ImageDto> Images { get; set; }
 
 
     }

@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KosmoForum</name>
+    </assembly>
+    <members>
+        <member name="M:KosmoForum.Controllers.CategoriesController.GetCategories">
+            <summary>
+            Get list of available categories
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.CategoriesController.GetCategory(System.Int32)">
+            <summary>
+            Get category with specific id
+            </summary>
+            <param name="id">Category Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.CategoriesController.CreateCategory(KosmoForum.Models.Dtos.CategoryCreateDto)">
+            <summary>
+            Create a category
+            </summary>
+            <param name="categoryDto">Category object which should be create</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.CategoriesController.UpdateCategory(System.Int32,KosmoForum.Models.Dtos.CategoryUpdateDto)">
+            <summary>
+            Update the previous created category
+            </summary>
+            <param name="id">Category Id</param>
+            <param name="categoryUpdateDto">Category Object</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.CategoriesController.DeleteCategory(System.Int32)">
+            <summary>
+            Delete previous created category
+            </summary>
+            <param name="id">Category Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.GetForumPosts">
+            <summary>
+            Get all forum posts
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.GetForumPost(System.Int32)">
+            <summary>
+            Get forum post with specific id
+            </summary>
+            <param name="id">forum post's id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.GetForumPostsInCategory(System.Int32)">
+            <summary>
+            Get all forum posts in specific category
+            </summary>
+            <param name="categoryId">Category Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.CreateForumPost(KosmoForum.Models.Dtos.ForumPostCreateDto)">
+            <summary>
+            Create forum post
+            </summary>
+            <param name="forumPostDto">Forum post object</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.UpdateForumPost(System.Int32,KosmoForum.Models.Dtos.ForumPostUpdateDto)">
+            <summary>
+            Update already existing forum post
+            </summary>
+            <param name="id">Post Id</param>
+            <param name="forumPostDto">Post Object</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.DeleteForumPost(System.Int32)">
+            <summary>
+            Delete already existing forum post
+            </summary>
+            <param name="id">Forum post id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.GetOpinion(System.Int32)">
+            <summary>
+            Get Opinion by Id
+            </summary>
+            <param name="id">Opinion Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.GetOpinions">
+            <summary>
+            Get all opinions
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.GetOpinionsInForumPost(System.Int32)">
+            <summary>
+            Get all opinion in specific forum post
+            </summary>
+            <param name="forumPostId">Forum post's id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.CreateOpinion(KosmoForum.Models.Dtos.OpinionCreateDto)">
+            <summary>
+            Create opinion
+            </summary>
+            <param name="opinionCreateObj">Opinion object</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.UpdateOpinion(System.Int32,KosmoForum.Models.Dtos.OpinionUpdateDto)">
+            <summary>
+            Update already existing opinion
+            </summary>
+            <param name="id">Opinion Id</param>
+            <param name="opinionUpdateObj">Opinion Object</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.DeleteOpinion(System.Int32)">
+            <summary>
+            Delete already existing opinion
+            </summary>
+            <param name="id">Opinion Id</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
