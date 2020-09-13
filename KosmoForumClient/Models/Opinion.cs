@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace KosmoForum.Models
+namespace KosmoForumClient.Models
 {
     public class Opinion
     {
@@ -34,7 +34,5 @@ namespace KosmoForum.Models
 
         [Required]
         public int UserId { get; set; }
-
-
     }
 }

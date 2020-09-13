@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace KosmoForum.Models
+namespace KosmoForumClient.Models
 {
     public class ForumPost
     {
@@ -40,7 +39,5 @@ namespace KosmoForum.Models
         public virtual List<Opinion> Opinions { get; set; }
 
         public virtual List<Image> Images { get; set; }
-
-
     }
 }
