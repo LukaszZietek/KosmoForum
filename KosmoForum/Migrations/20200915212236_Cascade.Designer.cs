@@ -4,14 +4,16 @@ using KosmoForum.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace KosmoForum.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200915212236_Cascade")]
+    partial class Cascade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,7 +188,7 @@ namespace KosmoForum.Migrations
                     b.HasOne("KosmoForum.Models.ForumPost", "ForumPost")
                         .WithMany("Images")
                         .HasForeignKey("ForumPostId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KosmoForum.Models.User", "User")
@@ -201,7 +203,7 @@ namespace KosmoForum.Migrations
                     b.HasOne("KosmoForum.Models.ForumPost", "ForumPost")
                         .WithMany("Opinions")
                         .HasForeignKey("ForumPostId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("KosmoForum.Models.User", "User")

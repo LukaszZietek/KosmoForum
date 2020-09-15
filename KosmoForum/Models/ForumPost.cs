@@ -10,6 +10,13 @@ namespace KosmoForum.Models
 {
     public class ForumPost
     {
+
+        //public ForumPost()
+        //{
+        //    this.Opinions = new HashSet<Opinion>();
+        //    this.Images = new HashSet<Image>();
+            
+        //}
         [Key]
         public int Id { get; set; }
         [Required]
@@ -37,9 +44,9 @@ namespace KosmoForum.Models
         public int CategoryId { get; set; }
 
 
-        public virtual List<Opinion> Opinions { get; set; }
+        public virtual ICollection<Opinion> Opinions { get; set; }
 
-        public virtual List<Image> Images { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
 
 
     }
