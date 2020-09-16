@@ -10,12 +10,7 @@ namespace KosmoForum.Models
 {
     public class User
     {
-        //public User()
-        //{
-        //    this.Images = new HashSet<Image>();
-        //    this.ForumPosts = new HashSet<ForumPost>();
-        //    this.Opinions = new HashSet<Opinion>();
-        //}
+        
 
         [Key]
         public int Id { get; set; }
@@ -29,9 +24,9 @@ namespace KosmoForum.Models
 
         public byte[] Avatar { get; set; }
 
-        public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<ForumPost> ForumPosts { get; set; }
-        public virtual ICollection<Opinion> Opinions { get; set; }
+        public ICollection<Image> Images { get; set; }
+        public ICollection<ForumPost> ForumPosts { get; set; }
+        public ICollection<Opinion> Opinions { get; set; }
 
         [NotMapped]
         public string Token { get; set; }

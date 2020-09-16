@@ -27,10 +27,10 @@ namespace KosmoForum.Models
         public int ForumPostId { get; set; }
 
         [ForeignKey("ForumPostId")]
-        public virtual ForumPost ForumPost { get; set; }
+        public ForumPost ForumPost { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
         [Required]
         public int UserId { get; set; }

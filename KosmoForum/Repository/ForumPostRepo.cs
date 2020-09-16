@@ -57,7 +57,10 @@ namespace KosmoForum.Repository
 
         public bool DeleteForumPost(ForumPost obj)
         {
-            _db.ForumPosts.Remove(obj);
+            var obj2 = _db.ForumPosts.Include(x => x.Images).Include(x => x.Opinions)
+                .FirstOrDefault(x => x.Id == obj.Id);
+
+            _db.ForumPosts.Remove(obj2);
             return Save();
         }
 

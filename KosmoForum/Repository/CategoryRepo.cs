@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using KosmoForum.DbContext;
 using KosmoForum.Models;
 using KosmoForum.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace KosmoForum.Repository
 {
@@ -65,6 +66,13 @@ namespace KosmoForum.Repository
 
         public bool DeleteCategory(Category category)
         {
+            var obj = _db.ForumPosts.Include(x => x.Opinions).Where(x => x.CategoryId == category.Id).ToList();
+
+            foreach (var item in obj)
+            {
+                _db.ForumPosts.Remove(item);
+            }
+
             _db.Categories.Remove(category);
             return Save();
         }

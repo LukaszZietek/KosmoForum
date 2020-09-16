@@ -11,12 +11,6 @@ namespace KosmoForum.Models
     public class ForumPost
     {
 
-        //public ForumPost()
-        //{
-        //    this.Opinions = new HashSet<Opinion>();
-        //    this.Images = new HashSet<Image>();
-            
-        //}
         [Key]
         public int Id { get; set; }
         [Required]
@@ -31,22 +25,22 @@ namespace KosmoForum.Models
         public DateTime Date { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public User User { get; set; }
         [Required]
         public int UserId { get; set; }
 
 
 
         [ForeignKey("CategoryId")]
-        public virtual Category Category { get; set; }
+        public Category Category { get; set; }
 
         [Required]
         public int CategoryId { get; set; }
 
 
-        public virtual ICollection<Opinion> Opinions { get; set; }
+        public ICollection<Opinion> Opinions { get; set; }
 
-        public virtual ICollection<Image> Images { get; set; }
+        public ICollection<Image> Images { get; set; }
 
 
     }

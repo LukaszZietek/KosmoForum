@@ -8,10 +8,6 @@ namespace KosmoForum.Models
 {
     public class Category
     {
-        //public Category()
-        //{
-        //    this.ForumPosts = new HashSet<ForumPost>();
-        //}
 
         [Key]
         public int Id { get; set; }
@@ -27,7 +23,7 @@ namespace KosmoForum.Models
 
         public DateTime CreationDateTime { get; set; }
 
-        public virtual ICollection<ForumPost> ForumPosts { get; set; }
+        public ICollection<ForumPost> ForumPosts { get; set; }
 
 
 

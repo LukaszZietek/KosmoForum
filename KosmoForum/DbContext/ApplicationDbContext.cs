@@ -28,10 +28,10 @@ namespace KosmoForum.DbContext
             //modelBuilder.Entity<ForumPost>()
             //   .HasMany(x => x.Opinions).WithOne(x => x.ForumPost).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ForumPost>().HasMany(x => x.Opinions).WithOne(x => x.ForumPost)
-                .HasForeignKey(x => x.ForumPostId).OnDelete(DeleteBehavior.ClientCascade);
+                .HasForeignKey(x => x.ForumPostId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ForumPost>().HasMany(x => x.Images).WithOne(x => x.ForumPost)
-                .HasForeignKey(x => x.ForumPostId).OnDelete(DeleteBehavior.ClientCascade);
+                .HasForeignKey(x => x.ForumPostId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Category>().HasMany(x => x.ForumPosts).WithOne(x => x.Category)
                 .HasForeignKey(x => x.CategoryId)
@@ -40,6 +40,10 @@ namespace KosmoForum.DbContext
             modelBuilder.Entity<User>()
                 .HasMany(x => x.Images).WithOne(x => x.User).HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.Opinions).WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>()
                 .HasMany(x => x.ForumPosts).WithOne(x => x.User)
