@@ -8,5 +8,6 @@ namespace KosmoForumClient.Repo.IRepo
 {
     public interface IForumPostRepository : IRepository<ForumPost>
     {
+        Task<IEnumerable<ForumPost>> GetAllFromCategory(string url,int categoryId);
     }
 }
