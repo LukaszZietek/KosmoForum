@@ -55,7 +55,7 @@ namespace KosmoForumClient.Controllers
                     for (int i = 0; i < files.Count; i++)
                     {
                         byte[] p1 = null;
-                        using (var fs1 = files[0].OpenReadStream())
+                        using (var fs1 = files[i].OpenReadStream())
                         {
                             using (var ms1 = new MemoryStream())
                             {
@@ -66,9 +66,6 @@ namespace KosmoForumClient.Controllers
 
                         forumPostObj.Images.Add(new Image
                         {
-                            AddTime = DateTime.Now,
-                            ForumPostId = forumPostObj.Id,
-                            UserId = 1, // Zmienić tutaj userId
                             Picture = p1
                         });
                     }
@@ -82,6 +79,9 @@ namespace KosmoForumClient.Controllers
                     }
                 }
 
+                forumPostObj.CategoryId = 39; // Zmienić tutaj categoryID
+                forumPostObj.UserId = 1; // Zmienić tutaj userId
+                forumPostObj.Date = DateTime.Now;
                 if (forumPostObj.Id == 0)
                 {
                     await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj);

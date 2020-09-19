@@ -29,6 +29,11 @@ namespace KosmoForumClient
             services.AddScoped<IForumPostRepository, ForumPostRepository>();
             services.AddScoped<IOpinionRepository, OpinionRepository>();
 
+            //var mvc = services.AddMvc(options =>
+            //{
+
+            //}).AddJsonOptions(x => x.SerializerSettings.Re)
+
 
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddHttpClient();

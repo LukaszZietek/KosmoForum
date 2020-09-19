@@ -49,7 +49,7 @@ namespace KosmoForumClient.Repo
             return null;
         }
 
-        public async Task<bool> UpdateAsync(string url, int id, T obj)
+        public virtual async Task<bool> UpdateAsync(string url, int id, T obj)
         {
             if (obj == null)
             {
@@ -86,7 +86,7 @@ namespace KosmoForumClient.Repo
             return false;
         }
 
-        public async Task<bool> CreateAsync(string url, T obj)
+        public virtual async Task<bool> CreateAsync(string url, T obj)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 

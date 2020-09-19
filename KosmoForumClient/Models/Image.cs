@@ -21,13 +21,11 @@ namespace KosmoForumClient.Models
         [ForeignKey("ForumPostId")]
         public virtual ForumPost ForumPost { get; set; }
 
-        [Required]
         public int ForumPostId { get; set; }
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
-        [Required]
         public int UserId { get; set; }
     }
 }

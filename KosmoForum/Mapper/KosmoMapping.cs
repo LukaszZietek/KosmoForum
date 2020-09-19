@@ -36,6 +36,7 @@ namespace KosmoForum.Mapper
             //--------------------------Image---------------------------------------------------
             CreateMap<Image, ImageDto>().ReverseMap();
             CreateMap<Image, ImageCreateDto>().ReverseMap();
+            CreateMap<Image, ImageCreateDto>().ReverseMap();
 
             //----------------------------------------------------------------------------------
         }

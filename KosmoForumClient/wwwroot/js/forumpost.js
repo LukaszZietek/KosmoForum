@@ -34,7 +34,7 @@ function loadDataTable() {
                 "width": "40%"
             },
             {
-                "data": "user.Username",
+                "data": "userId",
                 "width": "20%"
             },
             {

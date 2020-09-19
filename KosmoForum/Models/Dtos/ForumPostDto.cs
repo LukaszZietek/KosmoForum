@@ -9,6 +9,7 @@ namespace KosmoForum.Models.Dtos
 {
     public class ForumPostDto
     {
+        public int Id { get; set; }
         public string Title { get; set; }
 
         public string Content { get; set; }

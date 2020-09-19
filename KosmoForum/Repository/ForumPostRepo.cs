@@ -51,6 +51,17 @@ namespace KosmoForum.Repository
 
         public bool CreateForumPost(ForumPost obj)
         {
+            if (obj.Images.Count > 0)
+            {
+                foreach (var item in obj.Images)
+                {
+                    item.AddTime = DateTime.Now;
+                    item.UserId = 1; // zmienić user ID
+                    item.ForumPost = obj;
+                    _db.Images.Add(item);
+                }
+            }
+
             _db.ForumPosts.Add(obj);
             return Save();
         }
@@ -66,7 +77,35 @@ namespace KosmoForum.Repository
 
         public bool UpdateForumPost(ForumPost obj)
         {
-            _db.ForumPosts.Update(obj);
+            //var images = _db.Images.Where(x => x.ForumPostId == obj.Id);
+            //foreach (var im in COLLECTION)
+            //{
+            //    _db.Images.RemoveRange(images);
+            //    Save();
+            //}
+
+            var originalObj = _db.ForumPosts.FirstOrDefault(x => x.Id == obj.Id);
+            originalObj.CategoryId = obj.CategoryId;
+            originalObj.Content = obj.Content;
+            originalObj.Title = obj.Title;
+            originalObj.UserId = obj.UserId;
+            originalObj.Date = DateTime.Now;
+
+            foreach (var item in obj.Images)
+            {
+                if (item.Id > 0)
+                {
+                    var originalItem = _db.Images.FirstOrDefault(x => x.Id == item.Id);
+                    originalItem.Picture = item.Picture;
+                }
+                else
+                {
+                    item.AddTime = DateTime.Now;
+                    item.UserId = 1;
+                    item.ForumPost = obj;
+                    originalObj.Images.Add(item);
+                }
+            }
             return Save();
         }
 

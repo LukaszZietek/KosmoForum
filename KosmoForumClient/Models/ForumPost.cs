@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace KosmoForumClient.Models
 {
     public class ForumPost
     {
+        public ForumPost()
+        {
+            Images = new List<Image>();
+            Opinions = new List<Opinion>();
+        }
         [Key]
         public int Id { get; set; }
         [Required]
