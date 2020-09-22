@@ -22,7 +22,7 @@ namespace KosmoForumClient.Repo
 
         public async Task<IEnumerable<ForumPost>> GetAllFromCategory(string url, int categoryId)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostincategory/"+ categoryId );
+            var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostsincategory/"+ categoryId );
             var client = _clientFactory.CreateClient();
 
             HttpResponseMessage response = await client.SendAsync(request);

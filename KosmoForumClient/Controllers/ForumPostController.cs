@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
+using KosmoForumClient.Models.View;
 using KosmoForumClient.Repo;
 using KosmoForumClient.Repo.IRepo;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 
 namespace KosmoForumClient.Controllers
@@ -14,9 +16,11 @@ namespace KosmoForumClient.Controllers
     public class ForumPostController : Controller
     {
         private readonly IForumPostRepository _forumRepo;
-        public ForumPostController(IForumPostRepository forumRepo)
+        private readonly ICategoryRepository _categoryRepo;
+        public ForumPostController(IForumPostRepository forumRepo, ICategoryRepository categoryRepo)
         {
             _forumRepo = forumRepo;
+            _categoryRepo = categoryRepo;
 
         }
         public IActionResult Index()
@@ -25,27 +29,46 @@ namespace KosmoForumClient.Controllers
             return View(new ForumPost(){});
         }
 
+        public IActionResult ForumPostInCategory(int id)
+        {
+            return View(new ForumPost()
+            {
+                Id = id
+
+            });
+        }
+
         public async  Task<IActionResult> Upsert(int? id)
         {
-            ForumPost forumPost = new ForumPost();
+            IEnumerable<Category> categoryList = await _categoryRepo.GetAllAsync(SD.Categories);
+
+            ForumPostVM objVM = new ForumPostVM
+            {
+                CategoryList = categoryList.Select(i => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Text = i.Title,
+                    Value = i.Id.ToString()
+                }),
+                forumPost = new ForumPost()
+            };
+
             if (id == null)
             {
-                return View(forumPost);
+                return View(objVM);
             }
-
-            forumPost = await _forumRepo.GetAsync(SD.ForumPosts, id.GetValueOrDefault());
-            if (forumPost == null)
+            objVM.forumPost = await _forumRepo.GetAsync(SD.ForumPosts, id.GetValueOrDefault());
+            if (objVM.forumPost == null)
             {
                 return NotFound();
             }
 
-            return View(forumPost);
+            return View(objVM);
 
         }
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> Upsert(ForumPost forumPostObj)
+        public async Task<IActionResult> Upsert(ForumPostVM forumPostObj)
         {
             if (ModelState.IsValid)
             {
@@ -64,38 +87,40 @@ namespace KosmoForumClient.Controllers
                             }
                         }
 
-                        forumPostObj.Images.Add(new Image
+                        forumPostObj.forumPost.Images.Add(new Image
                         {
                             Picture = p1
                         });
                     }
                 }
-                else
+                forumPostObj.forumPost.UserId = 1; // Zmienić tutaj userId
+                //forumPostObj.forumPost.Date = DateTime.Now;
+                if (forumPostObj.forumPost.Id == 0)
                 {
-                    var objFromDb = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.Id);
-                    foreach (var item in objFromDb.Images)
-                    {
-                        forumPostObj.Images.Add(item);
-                    }
-                }
-
-                forumPostObj.CategoryId = 39; // Zmienić tutaj categoryID
-                forumPostObj.UserId = 1; // Zmienić tutaj userId
-                forumPostObj.Date = DateTime.Now;
-                if (forumPostObj.Id == 0)
-                {
-                    await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj);
+                    await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.forumPost);
                 }
                 else
                 {
-                    await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.Id, forumPostObj);
+                    await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.forumPost.Id, forumPostObj.forumPost);
                 }
 
                 return RedirectToAction(nameof(Index));
 
             }
-
-            return View(forumPostObj);
+            else
+            {
+                IEnumerable<Category> categories = await _categoryRepo.GetAllAsync(SD.Categories);
+                ForumPostVM forumVM = new ForumPostVM
+                {
+                    CategoryList = categories.Select(i => new SelectListItem
+                    {
+                        Text = i.Title,
+                        Value = i.Id.ToString()
+                    }),
+                    forumPost = new ForumPost()
+                };
+                return View(forumVM);
+            }
         }
 
         public async Task<IActionResult> GetAllForumPostsInCategory(int? categoryId)
@@ -105,7 +130,7 @@ namespace KosmoForumClient.Controllers
                 return NotFound();
             }
 
-            var objToReturn = _forumRepo.GetAllFromCategory(SD.ForumPosts, categoryId.GetValueOrDefault());
+            var objToReturn = await _forumRepo.GetAllFromCategory(SD.ForumPosts, categoryId.GetValueOrDefault());
             return Json(new {data = objToReturn});
 
         }

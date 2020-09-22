@@ -1,4 +1,4 @@
-﻿@model KosmoForumClient.Models.ForumPost
+﻿@model KosmoForumClient.Models.View.ForumPostVM
 
 @{
     var title = "Stwórz posta";
@@ -9,9 +9,9 @@
 
     <div class="row px-2 mx-2 backgroundWhite border">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @if (Model.Id != 0)
+        @if (Model.forumPost.Id != 0)
         {
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="forumPost.Id" />
             title = "Edycja posta";
         }
 
@@ -21,34 +21,45 @@
         <div class="col-8">
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Title"></label>
+                    Kategoria
                 </div>
                 <div class="col-8">
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                    @Html.DropDownListFor(m => m.forumPost.CategoryId, Model.CategoryList, "-Wybierz kategorie",
+                        new { @class = "form-control"})
+                    <span asp-validation-for="forumPost.CategoryId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="forumPost.Title"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="forumPost.Title" class="form-control"/>
+                    <span asp-validation-for="forumPost.Title" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Content"></label>
+                    <label asp-for="forumPost.Content"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Content" class="form-control" />
-                    <span asp-validation-for="Content" class="text-danger"></span>
+                    <input asp-for="forumPost.Content" class="form-control"/>
+                    <span asp-validation-for="forumPost.Content" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Images"></label>
+                    <label asp-for="forumPost.Images"></label>
                 </div>
                 <div class="col-8">
-                    <input type="file" asp-for="Images" id="projectImage" name="files" multiple class="form-control" />
+                    <input type="file" asp-for="forumPost.Images" id="projectImage" name="files" multiple class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4 offset-4">
                     <button type="submit" class="btn btn-primary form-control">
-                        @(Model.Id!=0 ? "Uaktualnij":"Stwórz")
+                        @(Model.forumPost.Id != 0 ? "Uaktualnij" : "Stwórz")
                     </button>
                 </div>
                 <div class="col-4">
@@ -57,9 +68,9 @@
             </div>
         </div>
         <div class="col-4 text-right" style="width: 250px;">
-            @if (Model.Images != null)
+            @if (Model.forumPost.Images != null)
             {
-                foreach (var item in Model.Images)
+                foreach (var item in Model.forumPost.Images)
                 {
                     var base64 = Convert.ToBase64String(item.Picture);
                     var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);

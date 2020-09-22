@@ -77,12 +77,6 @@ namespace KosmoForum.Repository
 
         public bool UpdateForumPost(ForumPost obj)
         {
-            //var images = _db.Images.Where(x => x.ForumPostId == obj.Id);
-            //foreach (var im in COLLECTION)
-            //{
-            //    _db.Images.RemoveRange(images);
-            //    Save();
-            //}
 
             var originalObj = _db.ForumPosts.FirstOrDefault(x => x.Id == obj.Id);
             originalObj.CategoryId = obj.CategoryId;
@@ -93,15 +87,10 @@ namespace KosmoForum.Repository
 
             foreach (var item in obj.Images)
             {
-                if (item.Id > 0)
-                {
-                    var originalItem = _db.Images.FirstOrDefault(x => x.Id == item.Id);
-                    originalItem.Picture = item.Picture;
-                }
-                else
+                if (!(item.Id > 0))
                 {
                     item.AddTime = DateTime.Now;
-                    item.UserId = 1;
+                    item.UserId = 1; // Zmienić
                     item.ForumPost = obj;
                     originalObj.Images.Add(item);
                 }
