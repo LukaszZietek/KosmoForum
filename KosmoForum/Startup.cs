@@ -38,8 +38,9 @@ namespace KosmoForum
                 .UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); // Dodawanie contextu (Entity Framework)
 
             services.AddScoped<ICategoryRepo, CategoryRepo>();
-            services.AddTransient<IForumPostRepo,ForumPostRepo>();
+            services.AddScoped<IForumPostRepo,ForumPostRepo>();
             services.AddScoped<IOpinionRepo, OpinionRepo>();
+            services.AddScoped<IImageRepo, ImageRepo>();
 
 
 

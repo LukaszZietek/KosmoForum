@@ -28,6 +28,7 @@ namespace KosmoForumClient
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IForumPostRepository, ForumPostRepository>();
             services.AddScoped<IOpinionRepository, OpinionRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
 
             //var mvc = services.AddMvc(options =>
             //{

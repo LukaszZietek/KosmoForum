@@ -72,6 +72,34 @@ namespace KosmoForum.Controllers
         }
 
         /// <summary>
+        /// Get category with specific title
+        /// </summary>
+        /// <param name="title">category title</param>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        [ProducesDefaultResponseType]
+        [HttpGet("[action]/{title}", Name = "GetCategoryByTitle")]
+        public IActionResult GetCategoryByTitle(string title)
+        {
+            if (title == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _repo.GetCategory(title);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            var objMap = _mapper.Map<CategoryDto>(obj);
+
+            return Ok(objMap);
+
+        }
+
+        /// <summary>
         /// Create a category
         /// </summary>
         /// <param name="categoryDto">Category object which should be create</param>

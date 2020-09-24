@@ -11,5 +11,6 @@ namespace KosmoForumClient
         public static string Categories = ApiBaseUrl + "api/v1/categories/";
         public static string ForumPosts = ApiBaseUrl + "api/v1/forumposts/";
         public static string Opinions = ApiBaseUrl + "api/v1/opinions/";
+        public static string Images = ApiBaseUrl + "api/v1/image/";
     }
 }

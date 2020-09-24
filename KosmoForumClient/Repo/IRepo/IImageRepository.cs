@@ -6,8 +6,7 @@ using KosmoForumClient.Models;
 
 namespace KosmoForumClient.Repo.IRepo
 {
-    public interface ICategoryRepository : IRepository<Category>
+   public interface IImageRepository : IRepository<Image>
     {
-        Task<Category> GetAsyncByTitle(string url, string title);
     }
 }

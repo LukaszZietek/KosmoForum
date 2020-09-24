@@ -9,6 +9,7 @@ using KosmoForumClient.Repo;
 using KosmoForumClient.Repo.IRepo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 
 namespace KosmoForumClient.Controllers
@@ -29,16 +30,33 @@ namespace KosmoForumClient.Controllers
             return View(new ForumPost(){});
         }
 
-        public IActionResult ForumPostInCategory(int id)
+        public async Task<IActionResult> ForumPostInCategory(/*int id*/ string title) // category title
         {
+            if (title == null)
+            {
+                return NotFound();
+            }
+           var categoryObj = await _categoryRepo.GetAsyncByTitle(SD.Categories, title);
+
             return View(new ForumPost()
             {
-                Id = id
+                Id = categoryObj.Id
 
             });
         }
 
-        public async  Task<IActionResult> Upsert(int? id)
+        public async  Task<IActionResult> ReadForumPost(int id) // forumpost id
+        {
+            var obj = await _forumRepo.GetAsync(SD.ForumPosts, id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        public async  Task<IActionResult> Upsert(int? id) // forumpost id
         {
             IEnumerable<Category> categoryList = await _categoryRepo.GetAllAsync(SD.Categories);
 

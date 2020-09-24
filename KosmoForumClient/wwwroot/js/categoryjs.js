@@ -35,8 +35,8 @@ function loadDataTable() {
             },
             {
                 "data": "title",
-                "render": function(data) {
-                    return `<a href="http://facebook.pl">${data}</a>`
+                "render": function (data) {
+                    return `<a href="forumpost/ForumPostInCategory?title=${data}">${data}</a>`;
                 },
                 "width": "40%"
             },
@@ -62,6 +62,8 @@ function loadDataTable() {
             }
         ]
     });
+
+
 }
 
 //function Delete(url) {
@@ -118,4 +120,6 @@ function Delete(url) {
         }
     });
 }
+
+
 

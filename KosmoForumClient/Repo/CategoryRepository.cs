@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Newtonsoft.Json;
 
 namespace KosmoForumClient.Repo
 {
@@ -15,6 +17,21 @@ namespace KosmoForumClient.Repo
         public CategoryRepository(IHttpClientFactory clientFactory) : base(clientFactory)
         {
             _clientFactory = clientFactory;
+        }
+
+        public async Task<Category> GetAsyncByTitle(string url, string title)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url+ "GetCategoryByTitle/"+title);
+            var client = _clientFactory.CreateClient();
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var stringObj = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<Category>(stringObj);
+            }
+
+            return null;
         }
     }
 }
