@@ -1,11 +1,31 @@
-﻿@model KosmoForumClient.Models.ForumPost
+﻿@model KosmoForumClient.Models.View.ForumPostDetailsVM
 
 
 
-<div class="p-4" style="border-radius: 20px;">
-    @Model.CategoryId
-    @Model.Content
-    @Model.Date
-    @Model.Title
-    @Model.UserId
-</div>
+    <div class="p-4" style="border-radius: 20px;">
+        <h1 class="align-items-center justify-content-center p-5 text-center">@Model.forumPost.Title</h1>
+        <div class="row">
+            <div class="container-fluid w-75" style="background-color: #EBE8E8;">
+                <span class="font-weight-bold">Data utworzenia: @Model.forumPost.Date</span> <span class="font-weight-bold float-right">Kategoria: @Model.category.Title</span>
+                <br />
+                <br />
+                <p class="text-justify font-weight-light">@Model.forumPost.Content</p>
+                <div class="row">
+                    @foreach (var item in Model.forumPost.Images)
+                    {
+                        var base64 = Convert.ToBase64String(item.Picture);
+                        var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
+                        <div class="rounded mx-auto d-block p-5">
+                            <img src="@imgSrc" style="width: 100%; height: 200px; width: 200px;" />
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="w-25" style="background-color: #EBE8E8;">
+                ID użytkownika: @Model.forumPost.UserId
+            </div>
+        </div>
+        <div class="col-6 text-right">
+            <a asp-controller="Opinions" asp-action="Upsert" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+        </div>
+    </div>

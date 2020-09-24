@@ -48,12 +48,19 @@ namespace KosmoForumClient.Controllers
         public async  Task<IActionResult> ReadForumPost(int id) // forumpost id
         {
             var obj = await _forumRepo.GetAsync(SD.ForumPosts, id);
+
             if (obj == null)
             {
                 return NotFound();
             }
 
-            return View(obj);
+            ForumPostDetailsVM objVM = new ForumPostDetailsVM()
+            {
+                category = await _categoryRepo.GetAsync(SD.Categories, obj.CategoryId),
+                forumPost = obj
+            };
+
+            return View(objVM);
         }
 
         public async  Task<IActionResult> Upsert(int? id) // forumpost id
