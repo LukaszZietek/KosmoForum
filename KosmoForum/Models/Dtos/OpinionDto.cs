@@ -7,6 +7,7 @@ namespace KosmoForum.Models.Dtos
 {
     public class OpinionDto
     {
+        public int Id { get; set; }
         public string Content { get; set; }
 
         public DateTime CreationDateTime { get; set; }

@@ -25,7 +25,34 @@
                 ID użytkownika: @Model.forumPost.UserId
             </div>
         </div>
+        <br />
+        <br />
+        <br />
+        
+        @foreach(var item in Model.forumPost.Opinions)
+        {
+            <div class="row">
+                <div class="container-fluid w-75" style="background-color: #EBE8E8;">
+                    <span class="font-weight-bold">Data utworzenia: @item.CreationDateTime</span>
+                    <span class="font-weight-bold float-right">
+                        <a href="@Url.Action("Upsert","Opinions",new {forumPostId = Model.forumPost.Id, opinionId = item.Id})"
+                           class='btn btn-success text-white' 
+                           style='cursor: pointer;'> <i class='far fa-edit'></i></a>
+                    </span>
+                    <br />
+                    <br />
+                    <p class="text-justify font-weight-light">@item.Content</p>
+                </div>
+                <div class="w-25" style="background-color: #EBE8E8;">
+                    ID użytkownika: @item.UserId
+                </div>
+            </div>
+            <br />
+            <br />
+        }
+        
+
         <div class="col-6 text-right">
-            <a asp-controller="Opinions" asp-action="Upsert" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+            <a href="@Url.Action("Upsert","Opinions", new {forumPostId = Model.forumPost.Id})" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
         </div>
     </div>
