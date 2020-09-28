@@ -24,7 +24,7 @@ namespace KosmoForum.Repository
         }
         public bool IsUniqueUser(string username)
         {
-            return _db.Users.Any(x => x.Username == username);
+            return !(_db.Users.Any(x => x.Username == username));
         }
 
         public User Authenticate(string username, string password)
@@ -56,7 +56,7 @@ namespace KosmoForum.Repository
             return user;
         }
 
-        public User Register(string username, string password, string email, byte[] avatar)
+        public User Register(string username, string password, string email, byte[] avatar = null)
         {
             User userObj = new User()
             {

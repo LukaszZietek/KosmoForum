@@ -12,6 +12,6 @@ namespace KosmoForum.Repository.IRepository
 
         User Authenticate(string username, string password);
 
-        User Register(string username, string password, string email, byte[] avatar = null);
+        User Register(string username, string password, string email, byte[] avatar);
     }
 }

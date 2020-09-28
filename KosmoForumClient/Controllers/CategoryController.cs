@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForumClient.Controllers
@@ -32,7 +33,7 @@ namespace KosmoForumClient.Controllers
                 return View(obj);
             }
 
-            obj = await _categoryRepo.GetAsync(SD.Categories, id.GetValueOrDefault());
+            obj = await _categoryRepo.GetAsync(SD.Categories, id.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
 
             if (obj == null)
             {
@@ -68,17 +69,17 @@ namespace KosmoForumClient.Controllers
                 }
                 else
                 {
-                    var objFromDb = await _categoryRepo.GetAsync(SD.Categories, obj.Id);
+                    var objFromDb = await _categoryRepo.GetAsync(SD.Categories, obj.Id, HttpContext.Session.GetString("JWToken"));
                     obj.Image = objFromDb.Image;
                 }
 
                 if (obj.Id == 0) // Oznacza to że nie istniał jeszcze w bazie danych
                 {
-                    await _categoryRepo.CreateAsync(SD.Categories, obj);
+                    await _categoryRepo.CreateAsync(SD.Categories, obj, HttpContext.Session.GetString("JWToken"));
                 }
                 else
                 {
-                    await _categoryRepo.UpdateAsync(SD.Categories, obj.Id, obj);
+                    await _categoryRepo.UpdateAsync(SD.Categories, obj.Id, obj, HttpContext.Session.GetString("JWToken"));
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -90,7 +91,7 @@ namespace KosmoForumClient.Controllers
 
         public async Task<IActionResult> GetAllCategories()
         {
-            var dataTable = await _categoryRepo.GetAllAsync(SD.Categories);
+            var dataTable = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
             return Json(new {data = dataTable});
             //return Json(new {data = await _categoryRepo.GetAllAsync(SD.Categories)});
 
@@ -99,7 +100,7 @@ namespace KosmoForumClient.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var status = await _categoryRepo.DeleteAsync(SD.Categories, id);
+            var status = await _categoryRepo.DeleteAsync(SD.Categories, id, HttpContext.Session.GetString("JWToken"));
             if (status)
             {
                 return Json(new {success = true, message = "Usuwanie zakończyło się sukcesem!"});

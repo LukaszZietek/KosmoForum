@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KosmoForum.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {

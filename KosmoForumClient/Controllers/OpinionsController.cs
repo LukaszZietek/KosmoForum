@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForumClient.Controllers
@@ -31,7 +32,7 @@ namespace KosmoForumClient.Controllers
                 return View(opinionObj);
             }
 
-            opinionObj = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault());
+            opinionObj = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault(),HttpContext.Session.GetString("JWToken"));
             if (opinionObj == null)
             {
                 return NotFound();
@@ -57,11 +58,11 @@ namespace KosmoForumClient.Controllers
 
                 if (opinionObj.Id == 0)
                 {
-                    await _opinionRepo.CreateAsync(SD.Opinions, opinionObj);
+                    await _opinionRepo.CreateAsync(SD.Opinions, opinionObj, HttpContext.Session.GetString("JWToken"));
                 }
                 else
                 {
-                    await _opinionRepo.UpdateAsync(SD.Opinions, opinionObj.Id, opinionObj);
+                    await _opinionRepo.UpdateAsync(SD.Opinions, opinionObj.Id, opinionObj, HttpContext.Session.GetString("JWToken"));
                 }
 
                 return RedirectToAction("ReadForumPost", "ForumPost", new {id = opinionObj.ForumPostId});

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
@@ -20,10 +21,15 @@ namespace KosmoForumClient.Repo
         }
 
 
-        public async Task<IEnumerable<ForumPost>> GetAllFromCategory(string url, int categoryId)
+        public async Task<IEnumerable<ForumPost>> GetAllFromCategory(string url, int categoryId, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostsincategory/"+ categoryId );
             var client = _clientFactory.CreateClient();
+
+            if (token != null && token.Length != 0)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
@@ -36,7 +42,7 @@ namespace KosmoForumClient.Repo
 
         }
 
-        public override async Task<bool> CreateAsync(string url, ForumPost obj)
+        public override async Task<bool> CreateAsync(string url, ForumPost obj, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
@@ -51,6 +57,11 @@ namespace KosmoForumClient.Repo
 
             var client = _clientFactory.CreateClient();
 
+            if (token != null && token.Length != 0)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -61,7 +72,7 @@ namespace KosmoForumClient.Repo
 
         }
 
-        public override async Task<bool> UpdateAsync(string url, int id, ForumPost obj)
+        public override async Task<bool> UpdateAsync(string url, int id, ForumPost obj, string token = "")
         {
             if (obj == null)
             {
@@ -75,6 +86,11 @@ namespace KosmoForumClient.Repo
             }), Encoding.UTF8, "application/json");
 
             var client = _clientFactory.CreateClient();
+
+            if (token != null && token.Length != 0)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.NoContent)

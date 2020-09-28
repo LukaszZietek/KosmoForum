@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForumClient.Controllers
@@ -18,7 +19,7 @@ namespace KosmoForumClient.Controllers
 
         public async Task<IActionResult> DeleteImage(int id)
         {
-            var status = await _imgRepo.DeleteAsync(SD.Images, id);
+            var status = await _imgRepo.DeleteAsync(SD.Images, id, HttpContext.Session.GetString("JWToken"));
             if (status)
             {
                 return Json(new { success = true, message = "Usuwanie zakończyło się sukcesem!" });

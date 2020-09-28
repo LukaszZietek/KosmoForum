@@ -6,8 +6,10 @@ using KosmoForumClient.Models;
 
 namespace KosmoForumClient.Repo.IRepo
 {
-    public interface IForumPostRepository : IRepository<ForumPost>
+    public interface IAccountRepository : IRepository<User>
     {
-        Task<IEnumerable<ForumPost>> GetAllFromCategory(string url,int categoryId, string token);
+        Task<User> LoginAsync(string url, User objToCreate);
+
+        Task<bool> RegisterAsync(string url, User objToCreate);
     }
 }
