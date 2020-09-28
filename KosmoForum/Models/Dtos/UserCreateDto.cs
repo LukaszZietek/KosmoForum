@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KosmoForum.Models
 {
-    public class User
+    public class UserCreateDto
     {
-        
-
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         public string Username { get; set; }
         [Required]
@@ -28,16 +21,6 @@ namespace KosmoForum.Models
         [Required]
         public DateTime JoinDateTime { get; set; }
 
-        [Required]
-        public string Role { get; set; }
-
         public byte[] Avatar { get; set; }
-
-        public ICollection<Image> Images { get; set; }
-        public ICollection<ForumPost> ForumPosts { get; set; }
-        public ICollection<Opinion> Opinions { get; set; }
-
-        [NotMapped]
-        public string Token { get; set; }
     }
 }

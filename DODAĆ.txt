@@ -1,4 +1,5 @@
 W kontrolerach pobieranie (postów, opinii itd dla danego użytkownika), w modelach po
 dodaniu autoryzacji użytkownika usunąć UserId i pobierać automatycznie.
 
-W cliencie w forumpostcontroller userid wpisywane na sztywno oraz categoryid
+W cliencie w forumpostcontroller userid wpisywane na sztywno oraz categoryid,
+Stworzyć UserDto bez zwracania Id itd.
