@@ -29,8 +29,13 @@ namespace KosmoForum.Repository
 
         public User Authenticate(string username, string password)
         {
-            var user = _db.Users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            var user = _db.Users.SingleOrDefault(x => x.Username == username);
             if (user == null)
+            {
+                return null;
+            }
+
+            if (!(PasswordHasher.Verify(password, user.Password)))
             {
                 return null;
             }
@@ -58,10 +63,11 @@ namespace KosmoForum.Repository
 
         public User Register(string username, string password, string email, byte[] avatar = null)
         {
+
             User userObj = new User()
             {
                 Username = username,
-                Password = password,
+                Password = PasswordHasher.Hash(password),
                 Role = "CommonUser",
                 Avatar = avatar,
                 Email = email,
@@ -72,6 +78,12 @@ namespace KosmoForum.Repository
             _db.SaveChanges();
             userObj.Password = "";
             return userObj;
+        }
+
+        public int GetUserIdUsingName(string username)
+        {
+            int id = _db.Users.FirstOrDefault(x => x.Username == username).Id;
+            return id;
         }
     }
 }

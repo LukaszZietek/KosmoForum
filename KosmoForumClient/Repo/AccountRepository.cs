@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
@@ -66,6 +67,34 @@ namespace KosmoForumClient.Repo
             {
                 return false;
             }
+        }
+
+        public async Task<int> GetUserId(string url, string username, string token = "")
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var client = _clientFactory.CreateClient();
+
+            if (token != null && token.Length > 0)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            if (username != null)
+            {
+                request.Content = new StringContent(JsonConvert.SerializeObject(username),Encoding.UTF8,"application/json");
+            }
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var stringObj = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<int>(stringObj);
+
+            }
+
+            return 0;
+
+
         }
     }
 }

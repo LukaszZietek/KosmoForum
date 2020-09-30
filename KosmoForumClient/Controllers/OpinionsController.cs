@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,17 +13,19 @@ namespace KosmoForumClient.Controllers
     public class OpinionsController : Controller
     {
         private readonly IOpinionRepository _opinionRepo;
+        private readonly IAccountRepository _accountRepo;
 
-        public OpinionsController(IOpinionRepository opinionRepo)
+        public OpinionsController(IOpinionRepository opinionRepo, IAccountRepository accountRepo)
         {
             _opinionRepo = opinionRepo;
+            _accountRepo = accountRepo;
         }
 
         //public IActionResult Index()
         //{
         //    return View();
         //}
-
+        [Authorize]
         public async Task<IActionResult> Upsert(int forumPostId, int? opinionId) // forumpostId and alternative u can call with opinion id to update it.
         {
             Opinion opinionObj = new Opinion();
@@ -45,6 +48,7 @@ namespace KosmoForumClient.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Upsert(Opinion opinionObj)
         {
             if (ModelState.IsValid)
@@ -54,7 +58,7 @@ namespace KosmoForumClient.Controllers
                     return NotFound();
                 }
 
-                opinionObj.UserId = 1; // ZMIENIĆ TUTAJ USER ID
+                opinionObj.UserId = await _accountRepo.GetUserId(SD.AccountApi,User.Identity.Name, HttpContext.Session.GetString("JWToken"));
 
                 if (opinionObj.Id == 0)
                 {

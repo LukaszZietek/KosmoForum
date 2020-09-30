@@ -11,5 +11,7 @@ namespace KosmoForumClient.Repo.IRepo
         Task<User> LoginAsync(string url, User objToCreate);
 
         Task<bool> RegisterAsync(string url, User objToCreate);
+
+        Task<int> GetUserId(string url, string username, string token);
     }
 }

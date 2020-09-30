@@ -22,6 +22,14 @@ namespace KosmoForum.Controllers
             _userRepo = userRepo;
         }
 
+        [HttpGet]
+        public IActionResult GetUserId([FromBody] string username)
+        {
+            var id = _userRepo.GetUserIdUsingName(username);
+            return Ok(id);
+
+        }
+
         [HttpPost("authenticate")]
         [AllowAnonymous]
         public IActionResult Authenticate([FromBody] AuthorizationModel model)
