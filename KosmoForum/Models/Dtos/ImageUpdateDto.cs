@@ -15,6 +15,9 @@ namespace KosmoForum.Models.Dtos
         [Required]
         public byte[] Picture { get; set; }
 
+        [Required]
+        public int UserId { get; set; }
+
 
     }
 }

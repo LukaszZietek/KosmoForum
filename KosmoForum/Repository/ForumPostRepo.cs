@@ -56,7 +56,6 @@ namespace KosmoForum.Repository
                 foreach (var item in obj.Images)
                 {
                     item.AddTime = DateTime.Now;
-                    item.UserId = 1; // zmienić user ID
                     item.ForumPost = obj;
                     _db.Images.Add(item);
                 }
@@ -90,7 +89,7 @@ namespace KosmoForum.Repository
                 if (!(item.Id > 0))
                 {
                     item.AddTime = DateTime.Now;
-                    item.UserId = 1; // Zmienić
+                    item.UserId = obj.UserId;
                     item.ForumPost = obj;
                     originalObj.Images.Add(item);
                 }

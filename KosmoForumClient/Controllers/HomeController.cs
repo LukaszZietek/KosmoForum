@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using KosmoForumClient.Models;
+using KosmoForumClient.Models.View;
 using KosmoForumClient.Repo.IRepo;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -21,17 +22,26 @@ namespace KosmoForumClient.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IAccountRepository _accountRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
 
-        public HomeController(ILogger<HomeController> logger, IAccountRepository accountRepo)
+        public HomeController(ILogger<HomeController> logger, IAccountRepository accountRepo, ICategoryRepository categoryRepo)
         {
             _logger = logger;
             _accountRepo = accountRepo;
+            _categoryRepo = categoryRepo;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            CategoryVM categoryVM = new CategoryVM
+            {
+                CategoriesList =
+                    await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"))
+            };
+
+
+            return View(categoryVM);
         }
 
         public IActionResult Privacy()

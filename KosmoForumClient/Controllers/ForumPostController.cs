@@ -20,10 +20,12 @@ namespace KosmoForumClient.Controllers
     {
         private readonly IForumPostRepository _forumRepo;
         private readonly ICategoryRepository _categoryRepo;
-        public ForumPostController(IForumPostRepository forumRepo, ICategoryRepository categoryRepo)
+        private readonly IAccountRepository _accountRepo;
+        public ForumPostController(IForumPostRepository forumRepo, ICategoryRepository categoryRepo, IAccountRepository accountRepo)
         {
             _forumRepo = forumRepo;
             _categoryRepo = categoryRepo;
+            _accountRepo = accountRepo;
 
         }
         public IActionResult Index()
@@ -99,10 +101,24 @@ namespace KosmoForumClient.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = await _accountRepo.GetUserId(SD.AccountApi, User.Identity.Name, HttpContext.Session.GetString("JWToken"));
+
+                ForumPost originalObj = null;
+                if (forumPostObj.forumPost.Id != 0)
+                {
+                   originalObj = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.forumPost.Id,
+                        HttpContext.Session.GetString("JWToken"));
+                }
+
                 var files = HttpContext.Request.Form.Files;
                 if (files.Count > 0)
                 {
-                    for (int i = 0; i < files.Count; i++)
+                    int counter = 0;
+                    if (originalObj != null)
+                    {
+                        counter = originalObj.Images.Count;
+                    }
+                    for (int i = 0; i < files.Count && counter < 3; i++)
                     {
                         byte[] p1 = null;
                         using (var fs1 = files[i].OpenReadStream())
@@ -116,12 +132,15 @@ namespace KosmoForumClient.Controllers
 
                         forumPostObj.forumPost.Images.Add(new Image
                         {
-                            Picture = p1
+                            Picture = p1,
+                            UserId = userId
                         });
+                        counter++;
                     }
                 }
-                forumPostObj.forumPost.UserId = 1; // Zmienić tutaj userId
-                //forumPostObj.forumPost.Date = DateTime.Now;
+
+                forumPostObj.forumPost.UserId = userId;
+
                 if (forumPostObj.forumPost.Id == 0)
                 {
                     await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.forumPost,HttpContext.Session.GetString("JWToken"));
