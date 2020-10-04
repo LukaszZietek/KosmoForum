@@ -10,7 +10,7 @@ function loadDataTable() {
         "ajax": {
             "url": urllink,
             "type": "GET",
-            "datatype": "json"
+            "datatype": "json",
         },
         "language": {
             "emptyTable": "Brak dostępnych postów",
@@ -28,6 +28,10 @@ function loadDataTable() {
         "columns": [
             {
                 "data": "title",
+                "render": function(data, type, row, meta) {
+                    var value = row['id'];
+                    return `<a href="/forumpost/readforumpost/${value}">${data}</a>`;
+                },
                 "width": "10%"
             },
             {
@@ -49,8 +53,6 @@ function loadDataTable() {
                         <a onclick=Delete("/forumpost/Delete/${data}")
                         class = 'btn btn-danger text-white'
                     style = 'cursor:pointer;'> <i class = 'far fa-trash-alt'></i></a>
-                    <a href="/forumpost/readforumpost/${data}" class = 'btn btn-info text-white'
-                    style = 'cursor:pointer;'> Czytaj ! </a>
                     </div>
                 `;
                 },

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace KosmoForumClient.Controllers
             _imgRepo = imgRepo;
         }
 
+        [Authorize]
         public async Task<IActionResult> DeleteImage(int id)
         {
             var status = await _imgRepo.DeleteAsync(SD.Images, id, HttpContext.Session.GetString("JWToken"));

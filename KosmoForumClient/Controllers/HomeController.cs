@@ -14,6 +14,7 @@ using KosmoForumClient.Models.View;
 using KosmoForumClient.Repo.IRepo;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace KosmoForumClient.Controllers
@@ -103,11 +104,7 @@ namespace KosmoForumClient.Controllers
                     byte[] p1 = null;
                     using (var fs1 = files[0].OpenReadStream())
                     {
-                        using (var ms1 = new MemoryStream())
-                        {
-                            fs1.CopyTo(ms1);
-                            p1 = ms1.ToArray();
-                        }
+                        p1 = Resizer.Resize(fs1, 50, 50);
                     }
 
                     userObj.Avatar = p1;
@@ -126,6 +123,7 @@ namespace KosmoForumClient.Controllers
             return View(userObj);
         }
 
+        [Authorize]
         public async Task<IActionResult> Logout(User userObj)
         {
             await HttpContext.SignOutAsync();

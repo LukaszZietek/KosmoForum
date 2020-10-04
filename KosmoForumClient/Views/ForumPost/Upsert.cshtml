@@ -58,9 +58,9 @@
         @if (Model.forumPost.Id != 0)
         {
             <input type="hidden" id="forumPostId" asp-for="forumPost.Id" />
-            <input type="hidden" id="imagesCount"  asp-for="forumPost.Images.Count"/>
             title = "Edycja posta";
         }
+        <input type="hidden" id="imagesCount" asp-for="forumPost.Images.Count" />
 
         <div class="col-12 p-3">
             <h2 class="text-primary">@title</h2>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="col-8">
                     @Html.DropDownListFor(m => m.forumPost.CategoryId, Model.CategoryList, "-Wybierz kategorie",
-                        new { @class = "form-control"})
+                        new { @class = "form-control" })
                     <span asp-validation-for="forumPost.CategoryId" class="text-danger"></span>
                 </div>
             </div>
@@ -82,7 +82,7 @@
                     <label asp-for="forumPost.Title"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="forumPost.Title" class="form-control"/>
+                    <input asp-for="forumPost.Title" class="form-control" />
                     <span asp-validation-for="forumPost.Title" class="text-danger"></span>
                 </div>
             </div>
@@ -91,7 +91,7 @@
                     <label asp-for="forumPost.Content"></label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="forumPost.Content" class="form-control"/>
+                    <input asp-for="forumPost.Content" class="form-control" />
                     <span asp-validation-for="forumPost.Content" class="text-danger"></span>
                 </div>
             </div>
@@ -100,7 +100,7 @@
                     <label asp-for="forumPost.Images"></label>
                 </div>
                 <div class="col-8">
-                    <input type="file" asp-for="forumPost.Images" id="projectImage" name="files" multiple class="form-control" onchange="checkFilesCount(this)"/>
+                    <input type="file" asp-for="forumPost.Images" id="projectImage" name="files" multiple class="form-control" onchange="checkFilesCount(this)" />
                 </div>
             </div>
             <div class="form-group row">
@@ -124,7 +124,7 @@
                     var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
                     <div class="container2">
                         <img src="@imgSrc" style="width: 100%" />
-                        <a onclick="DeleteImage(@item.Id)" class='btn btn-danger text-white' style = 'cursor:pointer;'> <i class = 'far fa-trash-alt'></i></a>
+                        <a onclick="DeleteImage(@item.Id)" class='btn btn-danger text-white' style='cursor:pointer;'> <i class='far fa-trash-alt'></i></a>
                     </div>
 
                 }
@@ -141,39 +141,21 @@
             type: 'DELETE',
             success: function(data) {
                 if (data.success) {
-                    //toastr.success(data.message);
                     location.reload();
 
                 }
-                //else {
-                //    toastr.error(data.message);
-                //}
             }
         });
     }
 
 
-    //$(function() {
-    //    $("button[type='submit']").click(function() {
-    //        var $fileUpload = $("input[type='file']");
-    //        if (parseInt($fileUpload.get(0).files.length) > 3) {
-    //            alert("Możesz dodać maksymalnie 3 pliki")
-    //        }
-    //    });
-    //});
-
     function checkFilesCount(id) {
-        if (document.getElementById("imagesCount").value != "0") {
-            var value = parseInt(document.getElementById("imagesCount").value);
-            if (id.files.length + value > 3) {
-                toastr.error("Załadowałeś za dużo plików, maksymalnie 3");
-                document.getElementById("projectImage").value = "";
-            }
-        } else {
-            if (id.files.length > 3) {
+        var value = parseInt(document.getElementById("imagesCount").value);
+        if (parseInt(id.files.length) + value > 3)
+        {
             toastr.error("Załadowałeś za dużo plików, maksymalnie 3");
             document.getElementById("projectImage").value = "";
-            }
         }
+
     }
 </script>

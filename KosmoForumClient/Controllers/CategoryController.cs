@@ -5,8 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using Image = SixLabors.ImageSharp.Image;
 
 namespace KosmoForumClient.Controllers
 {
@@ -25,6 +29,7 @@ namespace KosmoForumClient.Controllers
             return View(new Category(){});
         }
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Upsert(int? id)
         {
             Category obj = new Category();
@@ -48,6 +53,7 @@ namespace KosmoForumClient.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Upsert(Category obj)
         {
             if (ModelState.IsValid)
@@ -58,11 +64,7 @@ namespace KosmoForumClient.Controllers
                     byte[] p1 = null;
                     using (var fs1 = files[0].OpenReadStream())
                     {
-                        using (var ms1 = new MemoryStream())
-                        {
-                            fs1.CopyTo(ms1);
-                            p1 = ms1.ToArray();
-                        }
+                        p1 = Resizer.Resize(fs1, 50, 50);
                     }
 
                     obj.Image = p1;
@@ -98,6 +100,7 @@ namespace KosmoForumClient.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var status = await _categoryRepo.DeleteAsync(SD.Categories, id, HttpContext.Session.GetString("JWToken"));

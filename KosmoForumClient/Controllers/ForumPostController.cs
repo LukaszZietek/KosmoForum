@@ -8,6 +8,7 @@ using KosmoForumClient.Models;
 using KosmoForumClient.Models.View;
 using KosmoForumClient.Repo;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -67,6 +68,7 @@ namespace KosmoForumClient.Controllers
             return View(objVM);
         }
 
+        [Authorize]
         public async  Task<IActionResult> Upsert(int? id) // forumpost id
         {
             IEnumerable<Category> categoryList = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
@@ -97,6 +99,7 @@ namespace KosmoForumClient.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Upsert(ForumPostVM forumPostObj)
         {
             if (ModelState.IsValid)
@@ -123,11 +126,12 @@ namespace KosmoForumClient.Controllers
                         byte[] p1 = null;
                         using (var fs1 = files[i].OpenReadStream())
                         {
-                            using (var ms1 = new MemoryStream())
-                            {
-                                fs1.CopyTo(ms1);
-                                p1 = ms1.ToArray();
-                            }
+                            //using (var ms1 = new MemoryStream())
+                            //{
+                            //    fs1.CopyTo(ms1);
+                            //    p1 = ms1.ToArray();
+                            //}
+                            p1 = Resizer.Resize(fs1, 200, 200);
                         }
 
                         forumPostObj.forumPost.Images.Add(new Image
@@ -188,6 +192,7 @@ namespace KosmoForumClient.Controllers
         }
 
 
+        [Authorize]
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
