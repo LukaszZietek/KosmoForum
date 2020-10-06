@@ -7,6 +7,7 @@ using AutoMapper;
 using KosmoForum.Models;
 using KosmoForum.Models.Dtos;
 using KosmoForum.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -110,6 +111,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Category))]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
+        [Authorize(Roles = "admin")]
         public IActionResult CreateCategory([FromBody] CategoryCreateDto categoryDto)
         {
             if (categoryDto == null)
@@ -151,6 +153,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(500)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(404)]
+        [Authorize(Roles = "admin")]
         public IActionResult UpdateCategory(int id, [FromBody] CategoryUpdateDto categoryUpdateDto)
         {
             if (categoryUpdateDto == null || categoryUpdateDto.Id != id)
@@ -198,6 +201,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(500)]
         [ProducesResponseType(404)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteCategory(int id)
         {
             if (!_repo.CategoryExists(id))

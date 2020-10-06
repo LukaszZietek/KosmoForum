@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using KosmoForum.Models;
 using KosmoForum.Models.Dtos;
 using KosmoForum.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +20,7 @@ namespace KosmoForum.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IForumPostRepo _repo;
+        private readonly IUserRepo _userRepo;
 
         public ForumPostsController(IMapper mapper, IForumPostRepo repo)
         {
@@ -102,6 +105,39 @@ namespace KosmoForum.Controllers
         }
 
         /// <summary>
+        /// Get all forum posts which belong to current user
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(200, Type = typeof(ForumPostDto))]
+        [ProducesDefaultResponseType]
+        [HttpGet("[action]")]
+        public IActionResult GetForumPostsForUser()
+        {
+            var currentUser = User.Identity.Name;
+            if (currentUser == null)
+            {
+                ModelState.AddModelError("", "To access this action you have to login");
+                return BadRequest(ModelState);
+            }
+
+            var forumPosts = _repo.GetAllForumPostsForUser(_userRepo.GetUserIdUsingName(User.Identity.Name));
+            if (forumPosts == null)
+            {
+                return NotFound();
+            }
+
+            var forumPostDtos = new List<ForumPostDto>();
+            foreach (var item in forumPosts)
+            {
+                forumPostDtos.Add(_mapper.Map<ForumPostDto>(item));
+            }
+
+            return Ok(forumPostDtos);
+        }
+
+        /// <summary>
         /// Create forum post
         /// </summary>
         /// <param name="forumPostDto">Forum post object</param>
@@ -110,6 +146,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
+        [Authorize]
         public IActionResult CreateForumPost([FromBody] ForumPostCreateDto forumPostDto)
         {
             if (forumPostDto == null)
@@ -150,6 +187,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [Authorize]
         public IActionResult UpdateForumPost(int id, [FromBody] ForumPostUpdateDto forumPostDto)
         {
             if (forumPostDto == null || id != forumPostDto.Id)
@@ -195,6 +233,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public IActionResult DeleteForumPost(int id)
         {
             if (!_repo.ForumPostIfExist(id))

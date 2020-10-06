@@ -6,6 +6,7 @@ using AutoMapper;
 using KosmoForum.Models;
 using KosmoForum.Models.Dtos;
 using KosmoForum.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -108,6 +109,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Opinion))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
+        [Authorize]
         public IActionResult CreateOpinion([FromBody] OpinionCreateDto opinionCreateObj)
         {
             if (opinionCreateObj == null)
@@ -142,6 +144,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
+        [Authorize]
         public IActionResult UpdateOpinion(int id,[FromBody] OpinionUpdateDto opinionUpdateObj)
         {
             if (opinionUpdateObj == null || id != opinionUpdateObj.Id)
@@ -177,6 +180,7 @@ namespace KosmoForum.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesDefaultResponseType]
+        [Authorize]
         public IActionResult DeleteOpinion(int id)
         {
             if (!_repo.OpinionIfExist(id))

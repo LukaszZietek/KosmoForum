@@ -12,6 +12,7 @@ namespace KosmoForum.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/Image")]
     [ProducesResponseType(400)]
+    [Authorize]
     public class ImageController : ControllerBase
     {
         private readonly IImageRepo _imgRepo;

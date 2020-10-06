@@ -45,7 +45,7 @@ namespace KosmoForum.Repository
 
         public ICollection<ForumPost> GetAllForumPostsForUser(int userId)
         {
-            var values = _db.ForumPosts.Where(x => x.UserId == userId).ToList();
+            var values = _db.ForumPosts.Where(x => x.UserId == userId).OrderBy(x => x.Date).ToList();
             return values;
         }
 

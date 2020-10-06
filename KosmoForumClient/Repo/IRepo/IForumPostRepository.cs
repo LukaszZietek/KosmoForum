@@ -9,5 +9,7 @@ namespace KosmoForumClient.Repo.IRepo
     public interface IForumPostRepository : IRepository<ForumPost>
     {
         Task<IEnumerable<ForumPost>> GetAllFromCategory(string url,int categoryId, string token);
+
+        Task<IEnumerable<ForumPost>> GetAllBelongsToUser(string url, string token);
     }
 }

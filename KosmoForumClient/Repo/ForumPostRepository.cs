@@ -42,6 +42,26 @@ namespace KosmoForumClient.Repo
 
         }
 
+        public async Task<IEnumerable<ForumPost>> GetAllBelongsToUser(string url, string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostsforuser");
+            var client = _clientFactory.CreateClient();
+
+            if (token != null && token.Length > 0)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",token);
+            }
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                string obj = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<IEnumerable<ForumPost>>(obj);
+            }
+
+            return null;
+        }
+
         public override async Task<bool> CreateAsync(string url, ForumPost obj, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
