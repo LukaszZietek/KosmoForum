@@ -5,9 +5,23 @@ $(document).ready(function () {
 });
 
 function loadDataTable() {
+    var inputOption = document.getElementById("OptionOfData").value;
+    var urlLink;
+    if (inputOption == "index") { //Opcja 1, zwraca wszystkie dostepne posty w serwisie
+        urlLink = "/forumpost/GetAllForumPosts";
+    }
+    else if (inputOption == "category") { // Opcja2, zwraca wszystkie dostepne posty w danej kategorii
+        urlLink = "/forumpost/GetAllForumPostsInCategory?categoryid=" + document.getElementById("forum").value;
+    }
+    else if (inputOption == "userposts") { // Opcja 3, zwraca wszystkie dostepne posty stworzone przez danego uzytkownika
+        urlLink = "/user/GetMyForumPosts";
+    } else {
+        urlLink = "/forumpost/GetAllForumPosts";
+    }
+
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": "/forumpost/GetAllForumPosts",
+            "url": urlLink,
             "type": "GET",
             "datatype": "json"
         },
@@ -27,6 +41,10 @@ function loadDataTable() {
         "columns": [
             {
                 "data": "title",
+                "render": function (data, type, row, meta) {
+                    var value = row['id'];
+                    return `<a href="/forumpost/readforumpost/${value}">${data}</a>`;
+                },
                 "width": "10%"
             },
             {

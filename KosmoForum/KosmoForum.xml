@@ -66,6 +66,12 @@
             <param name="categoryId">Category Id</param>
             <returns></returns>
         </member>
+        <member name="M:KosmoForum.Controllers.ForumPostsController.GetForumPostsForUser">
+            <summary>
+            Get all forum posts which belong to current user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:KosmoForum.Controllers.ForumPostsController.CreateForumPost(KosmoForum.Models.Dtos.ForumPostCreateDto)">
             <summary>
             Create forum post

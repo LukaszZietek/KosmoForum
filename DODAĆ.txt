@@ -3,3 +3,4 @@ dodaniu autoryzacji użytkownika usunąć UserId i pobierać automatycznie.
 
 W cliencie w forumpostcontroller userid wpisywane na sztywno oraz categoryid,
 Stworzyć UserDto bez zwracania Id itd.
+Sprawdzić czy nowe claimidentity jest potrzebne oraz czy metoda do wyszukiwania po nazwie w API jest potrzebna

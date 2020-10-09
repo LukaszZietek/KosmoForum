@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using KosmoForum.Models;
@@ -115,14 +117,22 @@ namespace KosmoForum.Controllers
         [HttpGet("[action]")]
         public IActionResult GetForumPostsForUser()
         {
-            var currentUser = User.Identity.Name;
-            if (currentUser == null)
+            int currentUserId = 0;
+            try
+            {
+                currentUserId = Int32.Parse(User.Identity.Name);
+            }
+            catch (FormatException exception)
+            {
+                currentUserId = 0;
+            }
+            if (currentUserId == 0)
             {
                 ModelState.AddModelError("", "To access this action you have to login");
                 return BadRequest(ModelState);
             }
 
-            var forumPosts = _repo.GetAllForumPostsForUser(_userRepo.GetUserIdUsingName(User.Identity.Name));
+            var forumPosts = _repo.GetAllForumPostsForUser(currentUserId);
             if (forumPosts == null)
             {
                 return NotFound();

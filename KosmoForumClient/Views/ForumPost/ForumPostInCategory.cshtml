@@ -4,6 +4,7 @@
     <div class="row">
         <div class="col-6">
             <h2 class="text-primary">Lista postów w danej kategorii</h2>
+            <input type="hidden" value="category" id="OptionOfData" />
         </div>
         <div class="col-6 text-right">
             <a asp-action="Upsert" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Stwórz nowy post</a>
@@ -26,6 +27,6 @@
 
 @section Scripts
 {
-    <script src="~/js/forumpostincategory.js"></script>
+    <script src="~/js/forumpost.js"></script>
 }
 
