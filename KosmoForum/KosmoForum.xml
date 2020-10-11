@@ -143,5 +143,46 @@
             <param name="id">Opinion Id</param>
             <returns></returns>
         </member>
+        <member name="M:KosmoForum.Controllers.UsersController.GetUserId(System.String)">
+            <summary>
+            Return user's id who has appropriate username
+            </summary>
+            <param name="username"> User's name</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.UsersController.GetUserAvatar">
+            <summary>
+            Get avatar of user who are already authorize
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.UsersController.Authenticate(KosmoForum.Models.AuthorizationModel)">
+            <summary>
+            Authenticate user
+            </summary>
+            <param name="model">Model for authorization (username,password)</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.UsersController.Register(KosmoForum.Models.UserCreateDto)">
+            <summary>
+            Register User
+            </summary>
+            <param name="model">User model</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.UsersController.ChangeAvatar(System.Byte[])">
+            <summary>
+            Update user's avatar
+            </summary>
+            <param name="avatar">byte table which contain new avatar</param>
+            <returns></returns>
+        </member>
+        <member name="M:KosmoForum.Controllers.UsersController.ChangePassword(KosmoForum.Models.Dtos.UserUpdatePasswordDto)">
+            <summary>
+            Change the password for current user
+            </summary>
+            <param name="passwords">Old and new password</param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

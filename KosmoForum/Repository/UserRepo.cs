@@ -27,6 +27,12 @@ namespace KosmoForum.Repository
             return !(_db.Users.Any(x => x.Username == username));
         }
 
+        public User GetUser(int userId)
+        {
+            var userObj = _db.Users.SingleOrDefault(x => x.Id == userId);
+            return userObj;
+        }
+
         public User Authenticate(string username, string password)
         {
             var user = _db.Users.SingleOrDefault(x => x.Username == username);
@@ -48,7 +54,6 @@ namespace KosmoForum.Repository
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Role),
-                    new Claim(ClaimTypes.GivenName,user.Username), 
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
@@ -85,6 +90,25 @@ namespace KosmoForum.Repository
         {
             int id = _db.Users.FirstOrDefault(x => x.Username == username).Id;
             return id;
+        }
+
+        public byte[] GetUserAvatar(int userId)
+        {
+            byte[] userAvatar = _db.Users.FirstOrDefault(x => x.Id == userId)?.Avatar;
+            return userAvatar;
+        }
+
+
+        public bool UpdateUser(User userObj)
+        {
+            _db.Users.Update(userObj);
+            return Save();
+        }
+
+
+        public bool Save()
+        {
+            return _db.SaveChanges() >= 0 ? true : false;
         }
     }
 }
