@@ -127,7 +127,7 @@ namespace KosmoForum.Controllers
         /// </summary>
         /// <param name="avatar">byte table which contain new avatar</param>
         /// <returns></returns>
-        [HttpPost("[action]")]
+        [HttpPatch("[action]")]
         [ProducesResponseType(500)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesDefaultResponseType]
@@ -173,7 +173,7 @@ namespace KosmoForum.Controllers
         /// </summary>
         /// <param name="passwords">Old and new password</param>
         /// <returns></returns>
-        [HttpPost("[action]")]
+        [HttpPatch("[action]")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(500)]
         [ProducesDefaultResponseType]

@@ -119,7 +119,7 @@ namespace KosmoForumClient.Repo
 
         public async Task<bool> UpdateUserAvatar(string url, byte[] avatar, string token = "")
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, url+"changeavatar/");
+            var request = new HttpRequestMessage(HttpMethod.Patch, url+"changeavatar/");
             var client = _clientFactory.CreateClient();
 
             if (avatar != null && avatar.Length > 0)
@@ -150,7 +150,7 @@ namespace KosmoForumClient.Repo
 
         public async Task<bool> ChangePassword(string url,ChangePasswordVM passwordVM, string token)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, url+"changepassword/");
+            var request = new HttpRequestMessage(HttpMethod.Patch, url+"changepassword/");
             var client = _clientFactory.CreateClient();
 
             if (token != null && token.Length > 0)

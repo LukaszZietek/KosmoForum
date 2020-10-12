@@ -1,0 +1,27 @@
+﻿@model KosmoForumClient.Models.ForumPost
+
+<div class="p-4" style="border-radius:20px;">
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">Lista postów</h2>
+            <input type="hidden" value="userposts" id="OptionOfData" />
+        </div>
+    </div>
+    <br />
+    <br />
+    <table id="tblData" class="table table-primary" style="width: 100%; text-align: center;">
+        <thead>
+            <tr class="table-danger">
+                <th style="text-align: center;">Tytuł</th>
+                <th style="text-align: center;">Data</th>
+                <th style="text-align: center">Użytkownik</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/forumpost.js"></script>
+}
