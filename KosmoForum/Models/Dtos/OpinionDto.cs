@@ -16,5 +16,7 @@ namespace KosmoForum.Models.Dtos
         public Opinion.MarksType Marks { get; set; }
 
         public int UserId { get; set; }
+
+        public int ForumPostId { get; set; }
     }
 }

@@ -121,6 +121,12 @@
             <param name="forumPostId">Forum post's id</param>
             <returns></returns>
         </member>
+        <member name="M:KosmoForum.Controllers.OpinionsController.GetUsersOpinion">
+            <summary>
+            Return all opinion which belong to user
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:KosmoForum.Controllers.OpinionsController.CreateOpinion(KosmoForum.Models.Dtos.OpinionCreateDto)">
             <summary>
             Create opinion

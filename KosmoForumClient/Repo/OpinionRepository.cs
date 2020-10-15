@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Mvc;
 
 namespace KosmoForumClient.Repo
 {
@@ -14,6 +15,12 @@ namespace KosmoForumClient.Repo
         public OpinionRepository(IHttpClientFactory clientFactory) : base(clientFactory)
         {
             _clientFactory = clientFactory;
+        }
+
+        public async Task<IEnumerable<Opinion>> GetUserOpinion(string url, string token = "")
+        {
+            var obj = await GetAllAsync(url + "getusersopinion", token);
+            return obj;
         }
     }
 }

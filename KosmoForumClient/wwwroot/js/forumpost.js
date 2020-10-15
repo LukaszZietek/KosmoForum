@@ -45,11 +45,15 @@ function loadDataTable() {
                     var value = row['id'];
                     return `<a href="/forumpost/readforumpost/${value}">${data}</a>`;
                 },
-                "width": "10%"
+                "width": "20%"
             },
             {
                 "data": "date",
-                "width": "40%"
+                "render": function(data) {
+                    var showData = data.substring(8, 10) + "-" + data.substring(5, 7) + "-" + data.substring(0, 4);
+                    return `${showData}`;
+                },
+                "width": "30%"
             },
             {
                 "data": "userId",

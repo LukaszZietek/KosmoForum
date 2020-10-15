@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    
+
+
     @*<link href="toastr.css" rel="stylesheet" />*@
 
 </head>
@@ -41,7 +44,7 @@
 
 
                         @if (httpAccessor.HttpContext.Session.GetString("JWToken") != null &&
-                         httpAccessor.HttpContext.Session.GetString("JWToken").ToString().Length > 0)
+                       httpAccessor.HttpContext.Session.GetString("JWToken").ToString().Length > 0)
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-white" asp-controller="Home" asp-action="Logout">Wyloguj</a>
@@ -53,8 +56,9 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropDown">
                                     <a class="dropdown-item" asp-controller="User" asp-action="MyForumPosts">Moje posty</a>
+                                    <a class="dropdown-item" asp-controller="Opinions" asp-action="Index">Moje opinie</a>
                                     <a class="dropdown-item" asp-controller="User" asp-action="ChangeAvatar">Zmień avatar</a>
-                                    <a class="dropdown-item" asp-controller="User" asp-action='ChangePassword' >Zmień hasło</a>
+                                    <a class="dropdown-item" asp-controller="User" asp-action='ChangePassword'>Zmień hasło</a>
                                 </div>
                             </li>
 
@@ -88,9 +92,12 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://kit.fontawesome.com/a8d2cd06a3.js" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-@RenderSection("Scripts", required: false)
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

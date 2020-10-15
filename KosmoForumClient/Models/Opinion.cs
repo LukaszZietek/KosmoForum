@@ -17,6 +17,7 @@ namespace KosmoForumClient.Models
         public string Content { get; set; }
 
 
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime CreationDateTime { get; set; }
 
         public enum MarksType { Bad, Unsatisfactory, Sufficient, Good, VeryGood }

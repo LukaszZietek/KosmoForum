@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using KosmoForumClient.Models;
@@ -21,10 +22,12 @@ namespace KosmoForumClient.Controllers
             _accountRepo = accountRepo;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        [Authorize]
+        public IActionResult Index()
+        {
+            return View(new Opinion(){});
+        }
+
         [Authorize]
         public async Task<IActionResult> Upsert(int forumPostId, int? opinionId) // forumpostId and alternative u can call with opinion id to update it.
         {
@@ -76,6 +79,16 @@ namespace KosmoForumClient.Controllers
                 return View(opinionObj);
             }
 
+        }
+
+
+        [Authorize]
+        public async Task<IActionResult> GetAllOpinionForUser()
+        {
+            var obj = await _opinionRepo.GetUserOpinion(SD.Opinions, HttpContext.Session.GetString("JWToken"));
+
+
+            return Json(new {data = obj});
         }
 
 

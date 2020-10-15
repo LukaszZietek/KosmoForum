@@ -99,6 +99,42 @@ namespace KosmoForum.Controllers
 
             return Ok(opinionDtos);
         }
+
+        /// <summary>
+        /// Return all opinion which belong to user
+        /// </summary>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("[action]", Name = "GetUsersOpinion")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(200,Type = typeof(OpinionDto))]
+        [ProducesDefaultResponseType]
+        public IActionResult GetUsersOpinion()
+        {
+            if (User.Identity.Name == "0")
+            {
+                ModelState.AddModelError("","You should authorize yourself before this operation");
+                return BadRequest(ModelState);
+            }
+            var userId = Int32.Parse(User.Identity.Name);
+
+            var opinions = _repo.GetAllOpinionsForUser(userId);
+
+            if (opinions == null)
+            {
+                return NotFound();
+            }
+
+            var opinionsDto = new List<OpinionDto>();
+            foreach (var item in opinions)
+            {
+                opinionsDto.Add(_mapper.Map<OpinionDto>(item));
+            }
+
+            return Ok(opinionsDto);
+
+
+        }
         /// <summary>
         /// Create opinion
         /// </summary>
