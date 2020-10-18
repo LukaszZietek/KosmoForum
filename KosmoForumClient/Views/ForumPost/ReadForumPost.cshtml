@@ -21,8 +21,9 @@
                     }
                 </div>
             </div>
-            <div class="w-25" style="background-color: #EBE8E8;">
+            <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black">
                 ID użytkownika: @Model.forumPost.UserId
+
             </div>
         </div>
         <br />
@@ -43,8 +44,18 @@
                     <br />
                     <p class="text-justify font-weight-light">@item.Content</p>
                 </div>
-                <div class="w-25" style="background-color: #EBE8E8;">
+                <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black;">
                     ID użytkownika: @item.UserId
+                    <label>Ocena użytkownika:</label>
+                    <br />
+                    @for (int i = (int)item.Marks; i < 5; i++)
+                    {
+                        <i class="fa fa-star" style="color: pink" aria-hidden="true"></i>
+                    }
+                    @for (int i = 0; i < (int)item.Marks; i++)
+                    {
+                        <i class="fa fa-star-o" style="color: pink" aria-hidden="true"></i>
+                    }
                 </div>
             </div>
             <br />

@@ -4,9 +4,9 @@
 }
 
 
-<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+<form method="post" asp-action="Upsert" enctype="multipart/form-data" class="p-5">
 
-    <div class="row px-2 mx-2 backgroundWhite border">
+    <div class="row backgroundWhite border shadow-lg rounded p-3 w-100" align="center">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         @if (Model.Id != 0)
         {
@@ -21,31 +21,38 @@
         <div class="col-8">
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Content"></label>
+                    <label asp-for="Content">Treść : </label>
                 </div>
                 <div class="col-8">
-                    <input asp-for="Content" class="form-control" />
+                    @*<input asp-for="Content" class="form-control" />*@
+                    <textarea class="form-control " rows="5" style="width: 500px; resize: none;" asp-for="Content"></textarea>
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-4">
-                    <label asp-for="Marks"></label>
+                    <label asp-for="Marks">Ocena : </label>
                 </div>
                 <div class="col-8">
-                    <select asp-for="Marks" asp-items="Html.GetEnumSelectList<Opinion.MarksType>()" class="form-control"></select>
-                    
-                   
+                    @*<select asp-for="Marks" asp-items="Html.GetEnumSelectList<Opinion.MarksType>()" class="form-control"></select>*@
+                    <i class="fa fa-star-o fa-2x" id="star0" style="color: pink" aria-hidden="true" onclick="changeStars(0)" onmouseover="focusStars(0)" onmouseout="focusOutStars(0)"></i>
+                    <i class="fa fa-star-o fa-2x" id="star1" style="color: pink" aria-hidden="true" onclick="changeStars(1)" onmouseover="focusStars(1)" onmouseout="focusOutStars(1)"></i>
+                    <i class="fa fa-star-o fa-2x" id="star2" style="color: pink" aria-hidden="true" onclick="changeStars(2)" onmouseover="focusStars(2)" onmouseout="focusOutStars(2)"></i>
+                    <i class="fa fa-star-o fa-2x" id="star3" style="color: pink" aria-hidden="true" onclick="changeStars(3)" onmouseover="focusStars(3)" onmouseout="focusOutStars(3)"></i>
+                    <i class="fa fa-star-o fa-2x" id="star4" style="color: pink" aria-hidden="true" onclick="changeStars(4)" onmouseover="focusStars(4)" onmouseout="focusOutStars(4)"></i>
+                    <input type="hidden" asp-for="Marks" id="markInput" />
+
+
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col-4 offset-4">
+                <div class="col-4 offset-4 ">
                     <button type="submit" class="btn btn-primary form-control">
                         @(Model.Id!=0 ? "Aktualizuj":"Stwórz")
                     </button>
                 </div>
                 <div class="col-4">
-                    @Html.ActionLink("Powrót", "ReadForumPost", "ForumPost", new { id = Model.ForumPostId })
+                    @Html.ActionLink("Powrót", "ReadForumPost", "ForumPost", new { id = Model.ForumPostId, }, new {@class = "btn btn-success form-control"})
                 </div>
             </div>
         </div>
@@ -56,6 +63,38 @@
 @section Scripts
 {
     <script type="text/javascript">
+        function changeStars(counter) {
+
+            for (i = 0; i < 5; i++) {
+                $("#star" + i).attr('class', 'fa fa-star-o fa-2x');
+            }
+
+            for (i = 0; i <= counter; i++) {
+                $("#star" + i).attr('class', 'fa fa-star fa-2x');
+            }
+            $("#markInput").val(counter);
+        }
+
+
+        @*function focusStars(counter) {
+            for (i = 0; i <= counter; i++) {
+                $("#star" + i).attr('class', 'fa fa-star fa-2x');
+            }
+        }
+
+        function focusOutStars() {
+            var value = $("#markInput").val();
+
+            if (value == @(Model.Marks == Opinion.MarksType.Bad)) {
+                value = 0;
+                toastr.succes("Bad");
+            }
+            for (i = value; i < 5; i++) {
+                $("#star" + i).attr('class', 'fa fa-star-o fa-2x');
+            }
+         
+        }*@
+    
     </script>
 }
 

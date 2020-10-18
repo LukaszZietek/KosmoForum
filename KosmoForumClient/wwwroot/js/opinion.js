@@ -45,6 +45,20 @@ function loadDataTable() {
             },
             {
                 "data": "marks",
+                "render": function (data) {
+                    var value = parseInt(data);
+                    var backData = '';
+                    for (i = value; i < 5; i++) {
+                        backData +=
+                            '<i class="fa fa-star fa-1x" id="star0" style="color: pink" aria-hidden="true"></i>';
+                    }
+                    for (i = 0; i < value; i++) {
+                        backData +=
+                            '<i class="fa fa-star-o fa-1x" id="star0" style="color: pink" aria-hidden="true"></i>';
+                    }
+
+                    return `${backData}`;
+                },
                 "width": "20%"
             },
             {
