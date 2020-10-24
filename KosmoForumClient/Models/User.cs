@@ -10,13 +10,13 @@ namespace KosmoForumClient.Models
     public class User
     {
 
-        [Required]
+        [Required(ErrorMessage = "Login jest wymagany")]
         public string Username { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Hasło jest wymagane")]
         public string Password { get; set; }
 
-        [Required]
-        [EmailAddress(ErrorMessage = "Bad format of e-mail address")]
+        [Required(ErrorMessage="E-mail jest wymagany")]
+        [EmailAddress(ErrorMessage = "Zły format adresu e-mail")]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 

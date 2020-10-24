@@ -69,10 +69,11 @@ namespace KosmoForumClient.Controllers
 
                     obj.Image = p1;
                 }
-                else
+                else if (files.Count > 0 && obj.Id != 0)
                 {
                     var objFromDb = await _categoryRepo.GetAsync(SD.Categories, obj.Id, HttpContext.Session.GetString("JWToken"));
                     obj.Image = objFromDb.Image;
+                    
                 }
 
                 if (obj.Id == 0) // Oznacza to że nie istniał jeszcze w bazie danych

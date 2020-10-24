@@ -67,21 +67,22 @@ namespace KosmoForumClient.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(User userObj)
         {
-            User obj = await _accountRepo.LoginAsync(SD.AccountApi + "authenticate", userObj);
-            if (obj.Token == null)
+            var obj = await _accountRepo.LoginAsync(SD.AccountApi + "authenticate", userObj);
+            if (obj.Item2.Token == null)
             {
+                TempData["error"] = obj.Item1;
                 return View();
             }
 
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(ClaimTypes.Name,userObj.Username));
-            identity.AddClaim(new Claim(ClaimTypes.Role,obj.Role));
+            identity.AddClaim(new Claim(ClaimTypes.Name, userObj.Username));
+            identity.AddClaim(new Claim(ClaimTypes.Role, obj.Item2.Role));
 
             var principal = new ClaimsPrincipal(identity);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            HttpContext.Session.SetString("JWToken", obj.Token);
-            TempData["alert"] = "Witaj" + obj.Username;
+            HttpContext.Session.SetString("JWToken", obj.Item2.Token);
+            TempData["alert"] = "Witaj" + obj.Item2.Username;
             return RedirectToAction("Index");
         }
 
@@ -110,9 +111,10 @@ namespace KosmoForumClient.Controllers
                     userObj.Avatar = p1;
                 }
 
-                bool result = await _accountRepo.RegisterAsync(SD.AccountApi+"register", userObj);
-                if (result == false)
+                Tuple<string,bool> result = await _accountRepo.RegisterAsync(SD.AccountApi+"register", userObj);
+                if (result.Item2 == false)
                 {
+                    TempData["error"] = result.Item1;
                     return View();
                 }
 

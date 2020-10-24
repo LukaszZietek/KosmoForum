@@ -21,8 +21,10 @@ namespace KosmoForumClient.Repo
             _clientFactory = clientFactory;
         }
 
-        public async Task<User> LoginAsync(string url, User objToCreate)
+        public async Task<Tuple<string,User>> LoginAsync(string url, User objToCreate)
         {
+            Tuple<string, User> returnObj = Tuple.Create(" ",new User(){});
+
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             if (objToCreate != null)
             {
@@ -30,7 +32,7 @@ namespace KosmoForumClient.Repo
             }
             else
             {
-                return new User();
+                return returnObj;
             }
 
             var client = _clientFactory.CreateClient();
@@ -38,16 +40,22 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<User>(jsonString);
+                returnObj = Tuple.Create("", JsonConvert.DeserializeObject<User>(jsonString));
+                return returnObj;
             }
             else
             {
-                return new User();
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var obj = JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""});
+                returnObj = Tuple.Create(obj.message, new User() { });
+                return returnObj;
             }
+
         }
 
-        public async Task<bool> RegisterAsync(string url, User objToCreate)
+        public async Task<Tuple<string, bool>> RegisterAsync(string url, User objToCreate)
         {
+
             var request = new HttpRequestMessage(HttpMethod.Post,url);
             if (objToCreate != null)
             {
@@ -55,18 +63,20 @@ namespace KosmoForumClient.Repo
             }
             else
             {
-                return false;
+                return Tuple.Create("Object to create shouldn't be null",false);
             }
 
             var client = _clientFactory.CreateClient();
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                return true;
+                return Tuple.Create("", true);
             }
             else
             {
-                return false;
+                var jsonString = await response.Content.ReadAsStringAsync();
+                return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""}).message,
+                    false);
             }
         }
 

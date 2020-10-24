@@ -1,6 +1,7 @@
 ﻿@model KosmoForumClient.Models.User
 
 <div class="container p-5" align="center">
+    <input type="hidden" value="@TempData["error"]" id="tempDataError" />
 
     <form method="post" asp-action="Register" enctype="multipart/form-data">
 
@@ -56,17 +57,26 @@
 
 </div>
 
-<script>
-    function checkAmountOfFile(id) {
-        if (id.files.length > 1) {
-            toastr.error("Maksymalnie 1 avatar");
-            document.getElementById("projectImage").value = "";
+@section Scripts{
+
+    <script src="~/js/showErrorsFromApi.js"></script>
+
+    <script>
+        function checkAmountOfFile(id) {
+            if (id.files.length > 1) {
+                toastr.error("Maksymalnie 1 avatar");
+                document.getElementById("projectImage").value = "";
+            }
+            changeLabel(id);
         }
-        changeLabel(id);
-    }
 
-    function changeLabel(id) {
-        document.getElementById("projectImageLabel").textContent = id.files[0].name;
-    }
+        function changeLabel(id) {
+            document.getElementById("projectImageLabel").textContent = id.files[0].name;
+        }
 
-</script>
+
+
+
+
+    </script>
+}
