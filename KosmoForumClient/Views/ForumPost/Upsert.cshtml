@@ -50,6 +50,7 @@
     }
 </style>
 
+<input type="hidden" value="@TempData["error"]" id="tempDataError"/>
 
 <form method="post" asp-action="Upsert" enctype="multipart/form-data">
 
@@ -134,28 +135,33 @@
 
 </form>
 
-<script>
-    function DeleteImage(data) {
-        $.ajax({
-            url: "/image/DeleteImage/" + data,
-            type: 'DELETE',
-            success: function(data) {
-                if (data.success) {
-                    location.reload();
 
+@section Scripts
+{
+    <script src="~/js/showErrorsFromApi.js"></script>
+
+    <script>
+        function DeleteImage(data) {
+            $.ajax({
+                url: "/image/DeleteImage/" + data,
+                type: 'DELETE',
+                success: function(data) {
+                    if (data.success) {
+                        location.reload();
+
+                    }
                 }
-            }
-        });
-    }
-
-
-    function checkFilesCount(id) {
-        var value = parseInt(document.getElementById("imagesCount").value);
-        if (parseInt(id.files.length) + value > 3)
-        {
-            toastr.error("Załadowałeś za dużo plików, maksymalnie 3");
-            document.getElementById("projectImage").value = "";
+            });
         }
 
-    }
-</script>
+
+        function checkFilesCount(id) {
+            var value = parseInt(document.getElementById("imagesCount").value);
+            if (parseInt(id.files.length) + value > 3) {
+                toastr.error("Załadowałeś za dużo plików, maksymalnie 3");
+                document.getElementById("projectImage").value = "";
+            }
+
+        }
+    </script>
+}

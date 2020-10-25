@@ -61,7 +61,15 @@ namespace KosmoForumClient.Controllers
                     return NotFound();
                 }
 
-                opinionObj.UserId = await _accountRepo.GetUserId(SD.AccountApi,User.Identity.Name, HttpContext.Session.GetString("JWToken"));
+                var returnedTuple = await _accountRepo.GetUserId(SD.AccountApi, User.Identity.Name, HttpContext.Session.GetString("JWToken"));
+
+                if (returnedTuple.Item1 != "")
+                {
+                    TempData["error"] = returnedTuple.Item1;
+                    return View(opinionObj);
+                }
+
+                opinionObj.UserId = returnedTuple.Item2;
 
                 if (opinionObj.Id == 0)
                 {

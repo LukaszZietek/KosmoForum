@@ -104,7 +104,23 @@ namespace KosmoForumClient.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userId = await _accountRepo.GetUserId(SD.AccountApi, User.Identity.Name, HttpContext.Session.GetString("JWToken"));
+                var userTuple = await _accountRepo.GetUserId(SD.AccountApi, User.Identity.Name, HttpContext.Session.GetString("JWToken"));
+
+                if (userTuple.Item1 != "")
+                {
+                    TempData["error"] = userTuple.Item1;
+                    IEnumerable<Category> categories = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+                    ForumPostVM forumVM = new ForumPostVM
+                    {
+                        CategoryList = categories.Select(i => new SelectListItem
+                        {
+                            Text = i.Title,
+                            Value = i.Id.ToString()
+                        }),
+                        forumPost = new ForumPost()
+                    };
+                    return View(forumVM);
+                }
 
                 ForumPost originalObj = null;
                 if (forumPostObj.forumPost.Id != 0)
@@ -137,13 +153,13 @@ namespace KosmoForumClient.Controllers
                         forumPostObj.forumPost.Images.Add(new Image
                         {
                             Picture = p1,
-                            UserId = userId
+                            UserId = userTuple.Item2
                         });
                         counter++;
                     }
                 }
 
-                forumPostObj.forumPost.UserId = userId;
+                forumPostObj.forumPost.UserId = userTuple.Item2;
 
                 if (forumPostObj.forumPost.Id == 0)
                 {

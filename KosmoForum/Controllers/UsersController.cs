@@ -8,6 +8,7 @@ using KosmoForum.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace KosmoForum.Controllers
 {
@@ -35,7 +36,11 @@ namespace KosmoForum.Controllers
         public IActionResult GetUserId([FromBody] string username)
         {
             var id = _userRepo.GetUserIdUsingName(username);
-            return Ok(id);
+            if (id != 0)
+            {
+                return Ok(id);
+            }
+            return BadRequest(new {message = "User with this username doesn't exist in database"});
 
         }
         /// <summary>
@@ -53,8 +58,8 @@ namespace KosmoForum.Controllers
             int userId = 0;
             if (User.Identity.Name == "0")
             {
-                ModelState.AddModelError("","User isn't authorize so avatar is null");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("","User isn't authorize so avatar is null");
+                return BadRequest(new {message = "User isn't authorize so avatar is null" });
             }
             try
             {
@@ -62,8 +67,8 @@ namespace KosmoForum.Controllers
             }
             catch (Exception e)
             {
-                ModelState.AddModelError("","Error occurred during parsing userId");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("","Error occurred during parsing userId");
+                return StatusCode(500, new {message="Error occurred during parsing userId"});
             }
 
             byte[] userAvatar = _userRepo.GetUserAvatar(userId);
@@ -135,8 +140,7 @@ namespace KosmoForum.Controllers
         {
             if (User.Identity.Name == "0")
             {
-                ModelState.AddModelError("","You should authorize earlier");
-                return BadRequest(ModelState);
+                return BadRequest(new {message = "You should authorize yourself before you made this request"});
             }
 
             int userId = 0;
@@ -145,23 +149,23 @@ namespace KosmoForum.Controllers
 
             if (avatar == null)
             {
-                ModelState.AddModelError("","Avatar table is empty, try again");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("","Avatar table is empty, try again");
+                return BadRequest(new { message = "Avatar table is empty, try again"});
             }
 
             var userObj = _userRepo.GetUser(userId);
             if (userObj == null)
             {
-                ModelState.AddModelError("", "Something is wrong with your userId");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("", "Something is wrong with your userId");
+                return BadRequest(new { message="Something is wrong with your userId"});
             }
 
             userObj.Avatar = avatar;
 
             if (!_userRepo.UpdateUser(userObj))
             {
-                ModelState.AddModelError("","Error occured in database during updating avatar");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("","Error occured in database during updating avatar");
+                return StatusCode(500, new { message = "Error occured in database during updating avatar"});
             }
 
             return NoContent();
@@ -181,14 +185,14 @@ namespace KosmoForum.Controllers
         {
             if (User.Identity.Name == "0")
             {
-                ModelState.AddModelError("", "You should authorize earlier");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("", "You should authorize earlier");
+                return BadRequest(new { message= "You should authorize yourself earlier" });
             }
 
             if (passwords.NewPassword == null || passwords.OldPassword == null)
             {
-                ModelState.AddModelError("","One from two password is empty");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("","One from two password is empty");
+                return BadRequest(new { message = "One from two password is empty" });
             }
 
             int userId = Int32.Parse(User.Identity.Name);
@@ -196,8 +200,8 @@ namespace KosmoForum.Controllers
 
             if (!PasswordHasher.Verify(passwords.OldPassword, userObj.Password))
             {
-                ModelState.AddModelError("","Old password is incorrect");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("","Old password is incorrect");
+                return BadRequest(new {message = "Old password is incorrect"});
             }
 
             userObj.Password = PasswordHasher.Hash(passwords.NewPassword);
@@ -205,8 +209,8 @@ namespace KosmoForum.Controllers
 
             if (!_userRepo.UpdateUser(userObj))
             {
-                ModelState.AddModelError("", "Error occured in database during updating password");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", "Error occured in database during updating password");
+                return StatusCode(500, new {message = "Error occured in database during updating password"});
             }
 
             return NoContent();

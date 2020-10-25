@@ -88,8 +88,8 @@ namespace KosmoForum.Repository
 
         public int GetUserIdUsingName(string username)
         {
-            int id = _db.Users.FirstOrDefault(x => x.Username == username).Id;
-            return id;
+            int?  id = _db.Users.FirstOrDefault(x => x.Username == username)?.Id;
+            return id != null ? (int)id : 0;
         }
 
         public byte[] GetUserAvatar(int userId)

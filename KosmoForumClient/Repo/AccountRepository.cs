@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using KosmoForumClient.Models;
 using KosmoForumClient.Models.View;
 using KosmoForumClient.Repo.IRepo;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 
 namespace KosmoForumClient.Repo
@@ -80,7 +81,7 @@ namespace KosmoForumClient.Repo
             }
         }
 
-        public async Task<int> GetUserId(string url, string username, string token = "")
+        public async Task<Tuple<string,int>> GetUserId(string url, string username, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var client = _clientFactory.CreateClient();
@@ -99,16 +100,20 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var stringObj = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<int>(stringObj);
+                return Tuple.Create("", JsonConvert.DeserializeObject<int>(stringObj));
 
             }
 
-            return 0;
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            return Tuple.Create(
+                JsonConvert.DeserializeAnonymousType(jsonString,new {message=""}).message,
+                0);
 
 
         }
 
-        public async Task<byte[]> GetUserAvatar(string url, string token = "")
+        public async Task<Tuple<string,byte[]>> GetUserAvatar(string url, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+"getuseravatar/");
             var client = _clientFactory.CreateClient();
@@ -121,13 +126,16 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var stringBytes = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<byte[]>(stringBytes);
+                return Tuple.Create("", JsonConvert.DeserializeObject<byte[]>(stringBytes));
             }
+            var stringBytesContent = await response.Content.ReadAsStringAsync();
+            return Tuple.Create<string,byte[]>(
+                JsonConvert.DeserializeAnonymousType(stringBytesContent, new { message = "" }).message,
+                null);
 
-            return null;
         }
 
-        public async Task<bool> UpdateUserAvatar(string url, byte[] avatar, string token = "")
+        public async Task<Tuple<string,bool>> UpdateUserAvatar(string url, byte[] avatar, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Patch, url+"changeavatar/");
             var client = _clientFactory.CreateClient();
@@ -138,7 +146,7 @@ namespace KosmoForumClient.Repo
             }
             else
             {
-                return false;
+                return Tuple.Create("Problem occurred during processing file",false);
             }
 
             if (token != null && token.Length > 0)
@@ -149,16 +157,17 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                return true;
+                return Tuple.Create("", true);
             }
 
-            return false;
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new { message=""}).message,false);
 
 
 
         }
 
-        public async Task<bool> ChangePassword(string url,ChangePasswordVM passwordVM, string token)
+        public async Task<Tuple<string,bool>> ChangePassword(string url,ChangePasswordVM passwordVM, string token)
         {
             var request = new HttpRequestMessage(HttpMethod.Patch, url+"changepassword/");
             var client = _clientFactory.CreateClient();
@@ -174,10 +183,12 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                return true;
+                return Tuple.Create("", true);
             }
 
-            return false;
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""}).message, false);
         }
     }
 }

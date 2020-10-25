@@ -4,6 +4,8 @@
 }
 
 
+<input type="hidden" value="@TempData["error"]" id="tempDataError"/>
+
 <form method="post" asp-action="Upsert" enctype="multipart/form-data" class="p-5">
 
     <div class="row backgroundWhite border shadow-lg rounded p-3 w-100" align="center">
@@ -43,6 +45,7 @@
                     <input type="hidden" asp-for="Marks" id="markInput" />
 
 
+
                 </div>
             </div>
             <div class="form-group row">
@@ -62,6 +65,8 @@
 
 @section Scripts
 {
+    <script src="~/js/showErrorsFromApi.js"></script>
+
     <script type="text/javascript">
         function changeStars(counter) {
 
@@ -76,24 +81,26 @@
         }
 
 
-        @*function focusStars(counter) {
-            for (i = 0; i <= counter; i++) {
-                $("#star" + i).attr('class', 'fa fa-star fa-2x');
-            }
-        }
+        //function focusStars(counter) {
+        //    for (i = 0; i <= counter; i++) {
+        //        $("#star" + i).attr('class', 'fa fa-star fa-2x');
+        //    }
+        //}
 
-        function focusOutStars() {
-            var value = $("#markInput").val();
+        //function focusOutStars() {
 
-            if (value == @(Model.Marks == Opinion.MarksType.Bad)) {
-                value = 0;
-                toastr.succes("Bad");
-            }
-            for (i = value; i < 5; i++) {
-                $("#star" + i).attr('class', 'fa fa-star-o fa-2x');
-            }
+
+
+        //    for (i = value; i < 5; i++) {
+        //        $("#star" + i).attr('class', 'fa fa-star-o fa-2x');
+        //    }
+
+
+        //    for (i = 0; i < value; i++) {
+        //        $("#star" + i).attr('class', 'fa fa-star fa-2x');
+        //    }
          
-        }*@
+        //}
     
     </script>
 }

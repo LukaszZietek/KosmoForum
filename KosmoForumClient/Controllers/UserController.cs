@@ -37,11 +37,19 @@ namespace KosmoForumClient.Controllers
 
         public async Task<IActionResult> ChangeAvatar()
         {
+            Tuple<string, byte[]> userAvatarTuple =
+                await _accountRepo.GetUserAvatar(SD.AccountApi, HttpContext.Session.GetString("JWToken"));
+
+            if (userAvatarTuple.Item1 != "")
+            {
+                TempData["error"] = userAvatarTuple.Item1;
+                return View(new User() {Avatar = new byte[0], Username = User.Identity.Name});
+            }
 
             User currentUser = new User()
             {
                 Username = User.Identity.Name,
-                Avatar = await _accountRepo.GetUserAvatar(SD.AccountApi,HttpContext.Session.GetString("JWToken"))
+                Avatar = userAvatarTuple.Item2
             };
 
             return View(currentUser);
@@ -62,7 +70,12 @@ namespace KosmoForumClient.Controllers
 
                 userObj.Avatar = p1;
             }
-            await _accountRepo.UpdateUserAvatar(SD.AccountApi, userObj.Avatar, HttpContext.Session.GetString("JWToken"));
+            Tuple<string,bool> response =  await _accountRepo.UpdateUserAvatar(SD.AccountApi, userObj.Avatar, HttpContext.Session.GetString("JWToken"));
+            if (response.Item1 != "")
+            {
+                TempData["error"] = response.Item1;
+                return View(userObj);
+            }
             return RedirectToAction("Index", "Home");
 
         }
@@ -79,8 +92,14 @@ namespace KosmoForumClient.Controllers
             if (ModelState.IsValid)
             {
 
-                bool requestState = await _accountRepo.ChangePassword(SD.AccountApi, passwordModel,
+                Tuple<string,bool> requestState = await _accountRepo.ChangePassword(SD.AccountApi, passwordModel,
                     HttpContext.Session.GetString("JWToken"));
+
+                if (requestState.Item1 != "")
+                {
+                    TempData["error"] = requestState.Item1;
+                    return View(passwordModel);
+                }
 
 
                 return RedirectToAction("Index", "Home");
