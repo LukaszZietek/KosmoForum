@@ -7,14 +7,14 @@ namespace KosmoForumClient.Repo.IRepo
 {
     public interface IRepository<T> where T: class
     {
-        Task<T> GetAsync(string url, int id, string token);
+        Task<Tuple<string,T>> GetAsync(string url, int id, string token);
         Task<IEnumerable<T>> GetAllAsync(string url, string token);
 
         Task<bool> UpdateAsync(string url, int id, T obj, string token);
 
         Task<bool> DeleteAsync(string url, int id, string token);
 
-        Task<bool> CreateAsync(string url, T obj, string token);
+        Task<Tuple<string,bool>> CreateAsync(string url, T obj, string token);
 
     }
 }

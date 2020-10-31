@@ -8,6 +8,6 @@ namespace KosmoForumClient.Repo.IRepo
 {
     public interface ICategoryRepository : IRepository<Category>
     {
-        Task<Category> GetAsyncByTitle(string url, string title, string token);
+        Task<Tuple<string,Category>> GetAsyncByTitle(string url, string title, string token);
     }
 }

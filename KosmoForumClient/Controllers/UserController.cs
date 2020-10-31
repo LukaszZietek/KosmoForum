@@ -111,7 +111,7 @@ namespace KosmoForumClient.Controllers
         public async Task<IActionResult> GetMyForumPosts()
         {
             var forumPosts = await _forumRepo.GetAllBelongsToUser(SD.ForumPosts, HttpContext.Session.GetString("JWToken"));
-            return Json(new {data = forumPosts});
+            return Json(new {data = forumPosts.Item2});
 
         }
     }

@@ -20,7 +20,7 @@ namespace KosmoForumClient.Repo
             _clientFactory = clientFactory;
         }
 
-        public async Task<Category> GetAsyncByTitle(string url, string title, string token = "")
+        public async Task<Tuple<string,Category>> GetAsyncByTitle(string url, string title, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+ "GetCategoryByTitle/"+title);
             var client = _clientFactory.CreateClient();
@@ -34,10 +34,11 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var stringObj = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Category>(stringObj);
+                return Tuple.Create("", JsonConvert.DeserializeObject<Category>(stringObj));
             }
 
-            return null;
+            var errorObj = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorObj,new {message=""}).message, new Category() {});
         }
     }
 }

@@ -43,7 +43,7 @@ namespace KosmoForum.Controllers
             var obj = _repo.GetOpinion(id);
             if (obj == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Opinion with this specific id doesn't exist in database"});
             }
 
             var objDto = _mapper.Map<OpinionDto>(obj);
@@ -62,7 +62,7 @@ namespace KosmoForum.Controllers
             var listObj = _repo.GetAllOpinions();
             if (listObj == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Opinion doesn't exist in the database"});
             }
 
             var opinionDtos = new List<OpinionDto>();
@@ -89,7 +89,7 @@ namespace KosmoForum.Controllers
             var obj = _repo.GetAllOpinionsInPost(forumPostId);
             if (obj == null)
             {
-                return NotFound();
+                return NotFound(new {message = "This forum post doesn't contain any opinion yet"});
             }
             var opinionDtos = new List<OpinionDto>();
             foreach (var item in obj)
@@ -113,8 +113,8 @@ namespace KosmoForum.Controllers
         {
             if (User.Identity.Name == "0")
             {
-                ModelState.AddModelError("","You should authorize yourself before this operation");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("","You should authorize yourself before this operation");
+                return BadRequest(new {message = "You should authorize yourself before this operation" });
             }
             var userId = Int32.Parse(User.Identity.Name);
 
@@ -122,7 +122,7 @@ namespace KosmoForum.Controllers
 
             if (opinions == null)
             {
-                return NotFound();
+                return NotFound(new {message = "This user doesn't have opinion yet"});
             }
 
             var opinionsDto = new List<OpinionDto>();
@@ -150,20 +150,22 @@ namespace KosmoForum.Controllers
         {
             if (opinionCreateObj == null)
             {
-                return BadRequest(ModelState);
+                //return BadRequest(ModelState);
+                return BadRequest(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                //return BadRequest(ModelState);
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
             }
 
             var opinion = _mapper.Map<Opinion>(opinionCreateObj);
             opinion.CreationDateTime = DateTime.Now;
             if (!_repo.CreateOpinion(opinion))
             {
-                ModelState.AddModelError("",$"Error occurred during creating opinion with content : {opinion.Content}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("",$"Error occurred during creating opinion with content : {opinion.Content}");
+                return StatusCode(500, new {message = $"Error occurred during creating opinion with content : {opinion.Content}" });
             }
 
             return CreatedAtRoute("GetOpinion", new {Version = HttpContext.GetRequestedApiVersion().ToString() ,id = opinion.Id}, opinion);
@@ -185,20 +187,22 @@ namespace KosmoForum.Controllers
         {
             if (opinionUpdateObj == null || id != opinionUpdateObj.Id)
             {
-                return BadRequest(ModelState);
+                //return BadRequest(ModelState);
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                //return BadRequest(ModelState);
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
             }
 
             var opinionObj = _mapper.Map<Opinion>(opinionUpdateObj);
             opinionObj.CreationDateTime = DateTime.Now;
             if (!_repo.UpdateOpinion(opinionObj))
             {
-                ModelState.AddModelError("", $"Error occurred during updating opinion with this content: {opinionObj.Content}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", $"Error occurred during updating opinion with this content: {opinionObj.Content}");
+                return StatusCode(500, new {message = $"Error occurred during updating opinion with this content: {opinionObj.Content}" });
             }
 
             return NoContent();
@@ -221,14 +225,14 @@ namespace KosmoForum.Controllers
         {
             if (!_repo.OpinionIfExist(id))
             {
-                return NotFound();
+                return NotFound(new {message = "Opinion with this id doesn't exist in the database"});
             }
 
             var opinion = _repo.GetOpinion(id);
             if (!_repo.DeleteOpinion(opinion))
             {
-                ModelState.AddModelError("",$"Error occurred during deleting opinion with content which you see below: {opinion.Content}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("",$"Error occurred during deleting opinion with content which you see below: {opinion.Content}");
+                return StatusCode(500, new {message = $"Error occurred during deleting opinion with content which you see below: {opinion.Content}" });
             }
 
             return NoContent();

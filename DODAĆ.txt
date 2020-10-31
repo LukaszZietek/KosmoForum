@@ -5,3 +5,5 @@ Stworzyć UserDto bez zwracania Id itd.
 
 Dodać pokazywanie walidacji z web api w MVC
 
+W opinionrepo dodać błędy, korzysta z get async()
+

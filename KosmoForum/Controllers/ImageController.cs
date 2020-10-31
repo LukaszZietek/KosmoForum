@@ -37,13 +37,13 @@ namespace KosmoForum.Controllers
         {
             if (!_imgRepo.ifExists(id))
             {
-                return NotFound();
+                return NotFound(new { message = "Image with this specific id doesn't exist in the database"});
             }
 
             if (!_imgRepo.DeleteImage(id))
             {
-                ModelState.AddModelError("", $"Error occurred during deleting image");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", $"Error occurred during deleting image");
+                return StatusCode(500, new {message = $"Error occurred during deleting image" });
             }
             return NoContent();
         }

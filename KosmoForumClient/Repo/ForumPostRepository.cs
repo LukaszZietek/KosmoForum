@@ -21,7 +21,7 @@ namespace KosmoForumClient.Repo
         }
 
 
-        public async Task<IEnumerable<ForumPost>> GetAllFromCategory(string url, int categoryId, string token = "")
+        public async Task<Tuple<string,IEnumerable<ForumPost>>> GetAllFromCategory(string url, int categoryId, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostsincategory/"+ categoryId );
             var client = _clientFactory.CreateClient();
@@ -35,14 +35,16 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var stringObj = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IEnumerable<ForumPost>>(stringObj);
+                return Tuple.Create("", JsonConvert.DeserializeObject<IEnumerable<ForumPost>>(stringObj));
             }
-            return null;
+
+            var errorString = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorString, new {message = ""}.message), Enumerable.Empty<ForumPost>());
 
 
         }
 
-        public async Task<IEnumerable<ForumPost>> GetAllBelongsToUser(string url, string token)
+        public async Task<Tuple<string,IEnumerable<ForumPost>>> GetAllBelongsToUser(string url, string token)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+"getforumpostsforuser");
             var client = _clientFactory.CreateClient();
@@ -56,19 +58,21 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 string obj = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IEnumerable<ForumPost>>(obj);
+                return Tuple.Create("", JsonConvert.DeserializeObject<IEnumerable<ForumPost>>(obj));
             }
 
-            return null;
+            string errorObj = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorObj, new {message = ""}.message),
+                Enumerable.Empty<ForumPost>());
         }
 
-        public override async Task<bool> CreateAsync(string url, ForumPost obj, string token = "")
+        public override async Task<Tuple<string,bool>> CreateAsync(string url, ForumPost obj, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (obj == null)
             {
-                return false;
+                return Tuple.Create("Object which u send is empty", false);
             }
             request.Content = new StringContent(JsonConvert.SerializeObject(obj, Formatting.Indented, new JsonSerializerSettings
             {
@@ -85,10 +89,12 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.Created)
             {
-                return true;
+                return Tuple.Create("",true);
             }
 
-            return false;
+            var errorResponse = await response.Content.ReadAsStringAsync();
+
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorResponse, new {message = ""}.message), false);
 
         }
 

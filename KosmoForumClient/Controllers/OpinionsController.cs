@@ -38,11 +38,14 @@ namespace KosmoForumClient.Controllers
                 return View(opinionObj);
             }
 
-            opinionObj = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault(),HttpContext.Session.GetString("JWToken"));
-            if (opinionObj == null)
+            var opinionObjTuple = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault(),HttpContext.Session.GetString("JWToken"));
+            if (opinionObjTuple.Item1 != "")
             {
-                return NotFound();
+                TempData["error"] = opinionObjTuple.Item1;
+                return View(opinionObj);
             }
+
+            opinionObj = opinionObjTuple.Item2;
 
             opinionObj.ForumPostId = forumPostId;
             return View(opinionObj);
@@ -73,7 +76,12 @@ namespace KosmoForumClient.Controllers
 
                 if (opinionObj.Id == 0)
                 {
-                    await _opinionRepo.CreateAsync(SD.Opinions, opinionObj, HttpContext.Session.GetString("JWToken"));
+                    var result = await _opinionRepo.CreateAsync(SD.Opinions, opinionObj, HttpContext.Session.GetString("JWToken"));
+                    if (result.Item1 != "")
+                    {
+                        TempData["error"] = result.Item1;
+                        return View(opinionObj);
+                    }
                 }
                 else
                 {

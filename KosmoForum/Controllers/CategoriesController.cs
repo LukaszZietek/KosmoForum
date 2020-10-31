@@ -39,7 +39,7 @@ namespace KosmoForum.Controllers
             var categories = _repo.GetAllCategories();
             if (categories == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Database doesn't contain any categories"});
             }
             List<CategoryDto> objDtos = new List<CategoryDto>();
 
@@ -65,7 +65,7 @@ namespace KosmoForum.Controllers
             var obj = _repo.GetCategory(id);
             if (obj == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Category with this id isn't exist in database"});
             }
 
             var objDto = _mapper.Map<CategoryDto>(obj);
@@ -85,13 +85,13 @@ namespace KosmoForum.Controllers
         {
             if (title == null)
             {
-                return NotFound();
+                return BadRequest(new {message = "Title is null"});
             }
 
             var obj = _repo.GetCategory(title);
             if (obj == null)
             {
-                return NotFound();
+                return NotFound(new {message = "Object with this title isn't exist in database"});
             }
 
             var objMap = _mapper.Map<CategoryDto>(obj);
@@ -116,26 +116,32 @@ namespace KosmoForum.Controllers
         {
             if (categoryDto == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
+
+                //return BadRequest(ModelState);
             }
 
             if (_repo.CategoryExists(categoryDto.Title))
             {
-                ModelState.AddModelError("","Category with this title already exists");
-                return StatusCode(404, ModelState);
+                //ModelState.AddModelError("","Category with this title already exists");
+                //return StatusCode(404, ModelState);
+                return StatusCode(404, new { message = "Category with this title already exists" });
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+              
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
+
+                //return BadRequest(ModelState);
             }
 
             var categoryObj = _mapper.Map<Category>(categoryDto);
             categoryObj.CreationDateTime = DateTime.Now;
             if (!_repo.CreateCategory(categoryObj))
             {
-                ModelState.AddModelError("", $"Something went wrong when saving the record {categoryDto.Title}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", $"Something went wrong when saving the record {categoryDto.Title}");
+                return StatusCode(500, new {message = $"Something went wrong when saving the record {categoryDto.Title}" });
             }
 
             return CreatedAtRoute("GetCategory", new {Version = HttpContext.GetRequestedApiVersion().ToString() ,id = categoryObj.Id}, categoryObj);
@@ -158,12 +164,15 @@ namespace KosmoForum.Controllers
         {
             if (categoryUpdateDto == null || categoryUpdateDto.Id != id)
             {
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
+
                 return BadRequest(ModelState);
             }
 
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
+                //return BadRequest(ModelState);
             }
 
 
@@ -172,8 +181,8 @@ namespace KosmoForum.Controllers
             {
                 if (obj.Id != categoryUpdateDto.Id)
                 {
-                    ModelState.AddModelError("", "Category with this title already exists");
-                    return BadRequest(ModelState);
+                    //ModelState.AddModelError("", "Category with this title already exists");
+                    return BadRequest(new {message = "Category with this title already exists" });
                 }
             }
 
@@ -181,8 +190,8 @@ namespace KosmoForum.Controllers
 
             if (!_repo.UpdateCategory(categoryObj))
             {
-                ModelState.AddModelError("", $"Error occured during updating object: {categoryUpdateDto.Title}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", $"Error occured during updating object: {categoryUpdateDto.Title}");
+                return StatusCode(500, new {message = $"Error occured during updating object: {categoryUpdateDto.Title}"});
             }
 
             return NoContent();
@@ -206,15 +215,15 @@ namespace KosmoForum.Controllers
         {
             if (!_repo.CategoryExists(id))
             {
-                return NotFound(ModelState);
+                return NotFound(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
             }
 
             var categoryObj = _repo.GetCategory(id);
 
             if (!_repo.DeleteCategory(categoryObj))
             {
-                ModelState.AddModelError("", $"Error occurred during deleting object : {categoryObj.Title}");
-                return StatusCode(500, ModelState);
+                //ModelState.AddModelError("", $"Error occurred during deleting object : {categoryObj.Title}");
+                return StatusCode(500, new {message = $"Error occurred during deleting object : {categoryObj.Title}"});
             }
 
             return NoContent();

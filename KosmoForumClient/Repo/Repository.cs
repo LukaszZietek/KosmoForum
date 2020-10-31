@@ -20,7 +20,7 @@ namespace KosmoForumClient.Repo
             _clientFactory = clientFactory;
         }
 
-        public async Task<T> GetAsync(string url, int id, string token = "")
+        public async Task<Tuple<string,T>> GetAsync(string url, int id, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url+id);
             var client = _clientFactory.CreateClient();
@@ -34,10 +34,12 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(jsonString);
+                return Tuple.Create("", JsonConvert.DeserializeObject<T>(jsonString));
             }
 
-            return null;
+            string errorString = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorString, new {message = ""}.message),
+                default(T));
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(string url, string token = "")
@@ -107,13 +109,13 @@ namespace KosmoForumClient.Repo
             return false;
         }
 
-        public virtual async Task<bool> CreateAsync(string url, T obj, string token = "")
+        public virtual async Task<Tuple<string,bool>> CreateAsync(string url, T obj, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Post, url);
 
             if (obj == null)
             {
-                return false;
+                return Tuple.Create("Object which u want send is null",false);
             }
             request.Content = new StringContent(JsonConvert.SerializeObject(obj),Encoding.UTF8,"application/json");
 
@@ -127,10 +129,13 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.Created)
             {
-                return true;
+                return Tuple.Create("",true);
             }
 
-            return false;
+            var responseError = await response.Content.ReadAsStringAsync();
+
+
+            return Tuple.Create(JsonConvert.DeserializeAnonymousType(responseError, new {message = ""}.message), false);
 
 
         }

@@ -38,11 +38,12 @@ namespace KosmoForumClient.Controllers
                 return View(obj);
             }
 
-            obj = await _categoryRepo.GetAsync(SD.Categories, id.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
+            var errorTupleobj = await _categoryRepo.GetAsync(SD.Categories, id.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
 
-            if (obj == null)
+            if (errorTupleobj.Item1 != "")
             {
-                return NotFound();
+                TempData["error"] = errorTupleobj.Item2;
+                return View(obj);
             }
 
             return View(obj);
@@ -72,13 +73,23 @@ namespace KosmoForumClient.Controllers
                 else if (files.Count > 0 && obj.Id != 0)
                 {
                     var objFromDb = await _categoryRepo.GetAsync(SD.Categories, obj.Id, HttpContext.Session.GetString("JWToken"));
-                    obj.Image = objFromDb.Image;
+                    if (objFromDb.Item1 != "")
+                    {
+                        TempData["error"] = objFromDb.Item1;
+                        return View(obj);
+                    }
+                    obj.Image = objFromDb.Item2.Image;
                     
                 }
 
                 if (obj.Id == 0) // Oznacza to że nie istniał jeszcze w bazie danych
                 {
-                    await _categoryRepo.CreateAsync(SD.Categories, obj, HttpContext.Session.GetString("JWToken"));
+                   var result = await _categoryRepo.CreateAsync(SD.Categories, obj, HttpContext.Session.GetString("JWToken"));
+                   if (result.Item1 != "")
+                   {
+                       TempData["error"] = result.Item1;
+                       return View(obj);
+                   }
                 }
                 else
                 {

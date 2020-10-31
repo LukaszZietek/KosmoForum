@@ -201,7 +201,8 @@ namespace KosmoForum.Controllers
             if (!PasswordHasher.Verify(passwords.OldPassword, userObj.Password))
             {
                 //ModelState.AddModelError("","Old password is incorrect");
-                return BadRequest(new {message = "Old password is incorrect"});
+                //return BadRequest(ModelState);
+                return BadRequest(new { message = "Old password is incorrect" });
             }
 
             userObj.Password = PasswordHasher.Hash(passwords.NewPassword);

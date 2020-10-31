@@ -17,10 +17,10 @@ namespace KosmoForumClient.Repo
             _clientFactory = clientFactory;
         }
 
-        public async Task<IEnumerable<Opinion>> GetUserOpinion(string url, string token = "")
+        public async Task<Tuple<string,IEnumerable<Opinion>>> GetUserOpinion(string url, string token = "")
         {
             var obj = await GetAllAsync(url + "getusersopinion", token);
-            return obj;
+            return Tuple.Create("", obj);
         }
     }
 }

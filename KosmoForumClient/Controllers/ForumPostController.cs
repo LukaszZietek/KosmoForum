@@ -41,11 +41,15 @@ namespace KosmoForumClient.Controllers
             {
                 return NotFound();
             }
-           var categoryObj = await _categoryRepo.GetAsyncByTitle(SD.Categories, title, HttpContext.Session.GetString("JWToken"));
+            var categoryObj = await _categoryRepo.GetAsyncByTitle(SD.Categories, title, HttpContext.Session.GetString("JWToken"));
+            if (categoryObj.Item1 != "")
+            {
+                return NotFound();
+            }
 
             return View(new ForumPost()
             {
-                Id = categoryObj.Id
+                Id = categoryObj.Item2.Id
 
             });
         }
@@ -54,15 +58,22 @@ namespace KosmoForumClient.Controllers
         {
             var obj = await _forumRepo.GetAsync(SD.ForumPosts, id, HttpContext.Session.GetString("JWToken"));
 
-            if (obj == null)
+            if (obj.Item1 != "")
+            {
+                return NotFound();
+            }
+
+            var categoryObj = await _categoryRepo.GetAsync(SD.Categories, obj.Item2.CategoryId,
+                HttpContext.Session.GetString("JWToken"));
+            if (categoryObj.Item1 != "")
             {
                 return NotFound();
             }
 
             ForumPostDetailsVM objVM = new ForumPostDetailsVM()
             {
-                category = await _categoryRepo.GetAsync(SD.Categories, obj.CategoryId, HttpContext.Session.GetString("JWToken")),
-                forumPost = obj
+                category = categoryObj.Item2,
+                forumPost = obj.Item2
             };
 
             return View(objVM);
@@ -87,11 +98,17 @@ namespace KosmoForumClient.Controllers
             {
                 return View(objVM);
             }
-            objVM.forumPost = await _forumRepo.GetAsync(SD.ForumPosts, id.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
-            if (objVM.forumPost == null)
+
+            var forumPostTuple = await _forumRepo.GetAsync(SD.ForumPosts, id.GetValueOrDefault(),
+                HttpContext.Session.GetString("JWToken"));
+
+            if (forumPostTuple.Item1 != "")
             {
-                return NotFound();
+                TempData["error"] = forumPostTuple.Item1;
+                return View(objVM);
             }
+
+            objVM.forumPost = forumPostTuple.Item2;
 
             return View(objVM);
 
@@ -125,8 +142,15 @@ namespace KosmoForumClient.Controllers
                 ForumPost originalObj = null;
                 if (forumPostObj.forumPost.Id != 0)
                 {
-                   originalObj = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.forumPost.Id,
+                    var errorTupleObj = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.forumPost.Id,
                         HttpContext.Session.GetString("JWToken"));
+                    if (errorTupleObj.Item1 != "")
+                    {
+                        TempData["error"] = errorTupleObj.Item1;
+                        return View(forumPostObj);
+                    }
+
+                    originalObj = errorTupleObj.Item2;
                 }
 
                 var files = HttpContext.Request.Form.Files;
@@ -163,7 +187,12 @@ namespace KosmoForumClient.Controllers
 
                 if (forumPostObj.forumPost.Id == 0)
                 {
-                    await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.forumPost,HttpContext.Session.GetString("JWToken"));
+                    var result = await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.forumPost,HttpContext.Session.GetString("JWToken"));
+                    if (result.Item1 != "")
+                    {
+                        TempData["error"] = result.Item1;
+                        return View(forumPostObj);
+                    }
                 }
                 else
                 {
@@ -197,7 +226,7 @@ namespace KosmoForumClient.Controllers
             }
 
             var objToReturn = await _forumRepo.GetAllFromCategory(SD.ForumPosts, categoryId.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
-            return Json(new {data = objToReturn});
+            return Json(new {data = objToReturn.Item2});
 
         }
 

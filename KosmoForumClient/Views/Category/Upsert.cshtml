@@ -3,6 +3,7 @@
     var title = "Stwórz kategorie";
 }
 
+<input type="hidden" value="@TempData["error"]" id ="tempDataError"/>
 
 <form method="post" asp-action="Upsert" enctype="multipart/form-data">
 
@@ -67,4 +68,9 @@
     </div>
 
 </form>
+
+@section Scripts
+{
+    <script src="~/js/showErrorsFromApi.js"></script>
+}
 

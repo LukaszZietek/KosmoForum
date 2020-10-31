@@ -8,6 +8,6 @@ namespace KosmoForumClient.Repo.IRepo
 {
     public interface IOpinionRepository : IRepository<Opinion>
     {
-        Task<IEnumerable<Opinion>> GetUserOpinion(string url, string token);
+        Task<Tuple<string,IEnumerable<Opinion>>> GetUserOpinion(string url, string token);
     }
 }
