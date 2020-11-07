@@ -187,7 +187,12 @@ namespace KosmoForumClient.Controllers
                 }
                 else
                 {
-                    await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.ForumPostModel.Id, forumPostObj.ForumPostModel, HttpContext.Session.GetString("JWToken"));
+                    var result = await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.ForumPostModel.Id, forumPostObj.ForumPostModel, HttpContext.Session.GetString("JWToken"));
+                    if (result.Item1 != "")
+                    {
+                        TempData["error"] = result.Item1;
+                        return View(forumPostObj);
+                    }
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -238,7 +243,7 @@ namespace KosmoForumClient.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var status = await _forumRepo.DeleteAsync(SD.ForumPosts, id, HttpContext.Session.GetString("JWToken"));
-            if (status == true)
+            if (status.Item2)
             {
                 return Json(new {success = true, message = "Usuwanie zakończyło się sukcesem!" });
             }

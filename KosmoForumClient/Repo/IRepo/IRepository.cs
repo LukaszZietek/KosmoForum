@@ -10,9 +10,9 @@ namespace KosmoForumClient.Repo.IRepo
         Task<Tuple<string,T>> GetAsync(string url, int id, string token);
         Task<Tuple<string,IEnumerable<T>>> GetAllAsync(string url, string token);
 
-        Task<bool> UpdateAsync(string url, int id, T obj, string token);
+        Task<Tuple<string,bool>> UpdateAsync(string url, int id, T obj, string token);
 
-        Task<bool> DeleteAsync(string url, int id, string token);
+        Task<Tuple<string,bool>> DeleteAsync(string url, int id, string token);
 
         Task<Tuple<string,bool>> CreateAsync(string url, T obj, string token);
 

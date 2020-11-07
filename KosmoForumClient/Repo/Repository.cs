@@ -64,11 +64,11 @@ namespace KosmoForumClient.Repo
             return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorStr), Enumerable.Empty<T>());
         }
 
-        public virtual async Task<bool> UpdateAsync(string url, int id, T obj, string token = "")
+        public virtual async Task<Tuple<string,bool>> UpdateAsync(string url, int id, T obj, string token = "")
         {
             if (obj == null)
             {
-                return false;
+                return Tuple.Create("Object which you want send to database is empty", false);
             }
 
             var request = new HttpRequestMessage(HttpMethod.Patch, url+id);
@@ -84,13 +84,15 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                return true;
+                return Tuple.Create("", true);
             }
 
-            return false;
+            var errorStr = await response.Content.ReadAsStringAsync();
+
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorStr), false);
         }
 
-        public async Task<bool> DeleteAsync(string url, int id, string token = "")
+        public async Task<Tuple<string,bool>> DeleteAsync(string url, int id, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Delete, url+id);
 
@@ -105,10 +107,12 @@ namespace KosmoForumClient.Repo
 
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                return true;
+                return Tuple.Create("", true);
             }
 
-            return false;
+            var errorStr = await response.Content.ReadAsStringAsync();
+
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorStr), false);
         }
 
         public virtual async Task<Tuple<string,bool>> CreateAsync(string url, T obj, string token = "")
@@ -139,7 +143,7 @@ namespace KosmoForumClient.Repo
 
             return Tuple.Create(ModelStateDeserializer.DeserializeModelState(responseError), false);
 
-            //return Tuple.Create(JsonConvert.DeserializeAnonymousType(responseError, new { message = "" }.message), false);
+            
 
 
         }

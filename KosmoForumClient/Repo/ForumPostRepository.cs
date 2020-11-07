@@ -98,11 +98,11 @@ namespace KosmoForumClient.Repo
 
         }
 
-        public override async Task<bool> UpdateAsync(string url, int id, ForumPost obj, string token = "")
+        public override async Task<Tuple<string,bool>> UpdateAsync(string url, int id, ForumPost obj, string token = "")
         {
             if (obj == null)
             {
-                return false;
+                return Tuple.Create("Object which you want send to database is empty", false);
             }
 
             var request = new HttpRequestMessage(HttpMethod.Patch, url + id);
@@ -121,10 +121,11 @@ namespace KosmoForumClient.Repo
             HttpResponseMessage response = await client.SendAsync(request);
             if (response.StatusCode == HttpStatusCode.NoContent)
             {
-                return true;
+                return Tuple.Create("", true);
             }
 
-            return false;
+            var errorString = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorString), false);
         }
 
     }

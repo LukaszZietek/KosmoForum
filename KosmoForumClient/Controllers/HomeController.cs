@@ -64,7 +64,7 @@ namespace KosmoForumClient.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
             User obj = new User();
             return View(obj);
@@ -72,7 +72,7 @@ namespace KosmoForumClient.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(User userObj)
+        public async Task<IActionResult> Login(string returnUrl, User userObj)
         {
             var obj = await _accountRepo.LoginAsync(SD.AccountApi + "authenticate", userObj);
             if (obj.Item2.Token == null)
@@ -90,6 +90,10 @@ namespace KosmoForumClient.Controllers
 
             HttpContext.Session.SetString("JWToken", obj.Item2.Token);
             TempData["alert"] = "Witaj" + obj.Item2.Username;
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction("Index");
         }
 

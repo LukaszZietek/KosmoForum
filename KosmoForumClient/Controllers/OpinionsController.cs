@@ -85,7 +85,12 @@ namespace KosmoForumClient.Controllers
                 }
                 else
                 {
-                    await _opinionRepo.UpdateAsync(SD.Opinions, opinionObj.Id, opinionObj, HttpContext.Session.GetString("JWToken"));
+                    var result = await _opinionRepo.UpdateAsync(SD.Opinions, opinionObj.Id, opinionObj, HttpContext.Session.GetString("JWToken"));
+                    if (result.Item1 != "")
+                    {
+                        TempData["error"] = result.Item1;
+                        return View(opinionObj);
+                    }
                 }
 
                 return RedirectToAction("ReadForumPost", "ForumPost", new {id = opinionObj.ForumPostId});

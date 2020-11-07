@@ -22,7 +22,7 @@ namespace KosmoForumClient.Controllers
         public async Task<IActionResult> DeleteImage(int id)
         {
             var status = await _imgRepo.DeleteAsync(SD.Images, id, HttpContext.Session.GetString("JWToken"));
-            if (status)
+            if (status.Item2)
             {
                 return Json(new { success = true, message = "Usuwanie zakończyło się sukcesem!" });
             }
