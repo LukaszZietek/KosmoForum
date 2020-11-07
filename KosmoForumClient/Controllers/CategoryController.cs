@@ -106,7 +106,7 @@ namespace KosmoForumClient.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var dataTable = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
-            return Json(new {data = dataTable});
+            return Json(new {data = dataTable.Item2});
             //return Json(new {data = await _categoryRepo.GetAllAsync(SD.Categories)});
 
         }

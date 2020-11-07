@@ -35,10 +35,17 @@ namespace KosmoForumClient.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var requestTuple = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+            if (requestTuple.Item1 != "")
+            {
+                TempData["error"] = requestTuple.Item1;
+                return View(new CategoryVM() {CategoriesList = Enumerable.Empty<Category>()});
+            }
+
             CategoryVM categoryVM = new CategoryVM
             {
                 CategoriesList =
-                    await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"))
+                    requestTuple.Item2
             };
 
 

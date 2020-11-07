@@ -20,6 +20,11 @@ namespace KosmoForum
                 }
             }
 
+            if (errorMessage == "")
+            {
+                errorMessage = "Error";
+            }
+
             return errorMessage;
         }
     }

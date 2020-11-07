@@ -10,6 +10,6 @@ namespace KosmoForumClient.Models.View
     {
         public IEnumerable<SelectListItem> CategoryList { get; set; }
 
-        public ForumPost forumPost { get; set; }
+        public ForumPost ForumPostModel { get; set; }
     }
 }

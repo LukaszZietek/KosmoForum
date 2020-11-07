@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KosmoForumClient.Repo.IRepo;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace KosmoForumClient.Repo
 {
@@ -38,11 +39,11 @@ namespace KosmoForumClient.Repo
             }
 
             string errorString = await response.Content.ReadAsStringAsync();
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorString, new {message = ""}.message),
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorString),
                 default(T));
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(string url, string token = "")
+        public async Task<Tuple<string,IEnumerable<T>>> GetAllAsync(string url, string token = "")
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             var client = _clientFactory.CreateClient();
@@ -56,10 +57,11 @@ namespace KosmoForumClient.Repo
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var obj = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<IEnumerable<T>>(obj);
+                return Tuple.Create("", JsonConvert.DeserializeObject<IEnumerable<T>>(obj));
             }
 
-            return null;
+            var errorStr = await response.Content.ReadAsStringAsync();
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorStr), Enumerable.Empty<T>());
         }
 
         public virtual async Task<bool> UpdateAsync(string url, int id, T obj, string token = "")
@@ -132,10 +134,12 @@ namespace KosmoForumClient.Repo
                 return Tuple.Create("",true);
             }
 
-            var responseError = await response.Content.ReadAsStringAsync();
+            string responseError = await response.Content.ReadAsStringAsync();
 
 
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(responseError, new {message = ""}.message), false);
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(responseError), false);
+
+            //return Tuple.Create(JsonConvert.DeserializeAnonymousType(responseError, new { message = "" }.message), false);
 
 
         }

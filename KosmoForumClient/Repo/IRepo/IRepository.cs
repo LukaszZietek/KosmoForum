@@ -8,7 +8,7 @@ namespace KosmoForumClient.Repo.IRepo
     public interface IRepository<T> where T: class
     {
         Task<Tuple<string,T>> GetAsync(string url, int id, string token);
-        Task<IEnumerable<T>> GetAllAsync(string url, string token);
+        Task<Tuple<string,IEnumerable<T>>> GetAllAsync(string url, string token);
 
         Task<bool> UpdateAsync(string url, int id, T obj, string token);
 

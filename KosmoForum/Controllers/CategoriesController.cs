@@ -123,7 +123,7 @@ namespace KosmoForum.Controllers
 
             if (_repo.CategoryExists(categoryDto.Title))
             {
-                //ModelState.AddModelError("","Category with this title already exists");
+                //ModelState.AddModelError("", "Category with this title already exists");
                 //return StatusCode(404, ModelState);
                 return StatusCode(404, new { message = "Category with this title already exists" });
             }

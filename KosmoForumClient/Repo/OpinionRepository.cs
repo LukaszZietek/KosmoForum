@@ -20,7 +20,7 @@ namespace KosmoForumClient.Repo
         public async Task<Tuple<string,IEnumerable<Opinion>>> GetUserOpinion(string url, string token = "")
         {
             var obj = await GetAllAsync(url + "getusersopinion", token);
-            return Tuple.Create("", obj);
+            return obj;
         }
     }
 }

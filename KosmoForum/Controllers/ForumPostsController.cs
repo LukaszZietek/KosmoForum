@@ -128,8 +128,8 @@ namespace KosmoForum.Controllers
             }
             if (currentUserId == 0)
             {
-                ModelState.AddModelError("", "To access this action you have to login");
-                return BadRequest(ModelState);
+                //ModelState.AddModelError("", "To access this action you have to login");
+                return BadRequest(new {message = "To access this action you have to login"});
             }
 
             var forumPosts = _repo.GetAllForumPostsForUser(currentUserId);

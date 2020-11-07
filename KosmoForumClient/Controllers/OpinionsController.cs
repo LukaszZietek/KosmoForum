@@ -104,7 +104,7 @@ namespace KosmoForumClient.Controllers
             var obj = await _opinionRepo.GetUserOpinion(SD.Opinions, HttpContext.Session.GetString("JWToken"));
 
 
-            return Json(new {data = obj});
+            return Json(new {data = obj.Item2});
         }
 
 

@@ -47,8 +47,7 @@ namespace KosmoForumClient.Repo
             else
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
-                var obj = JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""});
-                returnObj = Tuple.Create(obj.message, new User() { });
+                returnObj = Tuple.Create(ModelStateDeserializer.DeserializeModelState(jsonString), new User() { });
                 return returnObj;
             }
 
@@ -76,7 +75,7 @@ namespace KosmoForumClient.Repo
             else
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
-                return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""}).message,
+                return Tuple.Create(ModelStateDeserializer.DeserializeModelState(jsonString),
                     false);
             }
         }
@@ -107,7 +106,7 @@ namespace KosmoForumClient.Repo
             var jsonString = await response.Content.ReadAsStringAsync();
 
             return Tuple.Create(
-                JsonConvert.DeserializeAnonymousType(jsonString,new {message=""}).message,
+                ModelStateDeserializer.DeserializeModelState(jsonString),
                 0);
 
 
@@ -130,7 +129,7 @@ namespace KosmoForumClient.Repo
             }
             var stringBytesContent = await response.Content.ReadAsStringAsync();
             return Tuple.Create<string,byte[]>(
-                JsonConvert.DeserializeAnonymousType(stringBytesContent, new { message = "" }).message,
+               ModelStateDeserializer.DeserializeModelState(stringBytesContent),
                 null);
 
         }
@@ -161,7 +160,7 @@ namespace KosmoForumClient.Repo
             }
 
             var jsonString = await response.Content.ReadAsStringAsync();
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new { message=""}).message,false);
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(jsonString),false);
 
 
 
@@ -188,7 +187,7 @@ namespace KosmoForumClient.Repo
 
             var jsonString = await response.Content.ReadAsStringAsync();
 
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(jsonString, new {message = ""}).message, false);
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(jsonString), false);
         }
     }
 }

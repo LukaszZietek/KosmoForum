@@ -82,7 +82,13 @@ namespace KosmoForumClient.Controllers
         [Authorize]
         public async  Task<IActionResult> Upsert(int? id) // forumpost id
         {
-            IEnumerable<Category> categoryList = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+            Tuple<string,IEnumerable<Category>> tupleResponse = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+            if (tupleResponse.Item1 != "")
+            {
+                TempData["error"] = tupleResponse.Item1;
+                return View(new ForumPostVM() {CategoryList = new List<SelectListItem>(), ForumPostModel = new ForumPost() {}});
+            }
+            IEnumerable<Category> categoryList = tupleResponse.Item2;
 
             ForumPostVM objVM = new ForumPostVM
             {
@@ -91,7 +97,7 @@ namespace KosmoForumClient.Controllers
                     Text = i.Title,
                     Value = i.Id.ToString()
                 }),
-                forumPost = new ForumPost()
+                ForumPostModel = new ForumPost()
             };
 
             if (id == null)
@@ -108,7 +114,7 @@ namespace KosmoForumClient.Controllers
                 return View(objVM);
             }
 
-            objVM.forumPost = forumPostTuple.Item2;
+            objVM.ForumPostModel = forumPostTuple.Item2;
 
             return View(objVM);
 
@@ -126,23 +132,13 @@ namespace KosmoForumClient.Controllers
                 if (userTuple.Item1 != "")
                 {
                     TempData["error"] = userTuple.Item1;
-                    IEnumerable<Category> categories = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
-                    ForumPostVM forumVM = new ForumPostVM
-                    {
-                        CategoryList = categories.Select(i => new SelectListItem
-                        {
-                            Text = i.Title,
-                            Value = i.Id.ToString()
-                        }),
-                        forumPost = new ForumPost()
-                    };
-                    return View(forumVM);
+                    return View(forumPostObj);
                 }
 
                 ForumPost originalObj = null;
-                if (forumPostObj.forumPost.Id != 0)
+                if (forumPostObj.ForumPostModel.Id != 0)
                 {
-                    var errorTupleObj = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.forumPost.Id,
+                    var errorTupleObj = await _forumRepo.GetAsync(SD.ForumPosts, forumPostObj.ForumPostModel.Id,
                         HttpContext.Session.GetString("JWToken"));
                     if (errorTupleObj.Item1 != "")
                     {
@@ -166,15 +162,10 @@ namespace KosmoForumClient.Controllers
                         byte[] p1 = null;
                         using (var fs1 = files[i].OpenReadStream())
                         {
-                            //using (var ms1 = new MemoryStream())
-                            //{
-                            //    fs1.CopyTo(ms1);
-                            //    p1 = ms1.ToArray();
-                            //}
                             p1 = Resizer.Resize(fs1, 200, 200);
                         }
 
-                        forumPostObj.forumPost.Images.Add(new Image
+                        forumPostObj.ForumPostModel.Images.Add(new Image
                         {
                             Picture = p1,
                             UserId = userTuple.Item2
@@ -183,11 +174,11 @@ namespace KosmoForumClient.Controllers
                     }
                 }
 
-                forumPostObj.forumPost.UserId = userTuple.Item2;
+                forumPostObj.ForumPostModel.UserId = userTuple.Item2;
 
-                if (forumPostObj.forumPost.Id == 0)
+                if (forumPostObj.ForumPostModel.Id == 0)
                 {
-                    var result = await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.forumPost,HttpContext.Session.GetString("JWToken"));
+                    var result = await _forumRepo.CreateAsync(SD.ForumPosts, forumPostObj.ForumPostModel,HttpContext.Session.GetString("JWToken"));
                     if (result.Item1 != "")
                     {
                         TempData["error"] = result.Item1;
@@ -196,7 +187,7 @@ namespace KosmoForumClient.Controllers
                 }
                 else
                 {
-                    await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.forumPost.Id, forumPostObj.forumPost, HttpContext.Session.GetString("JWToken"));
+                    await _forumRepo.UpdateAsync(SD.ForumPosts, forumPostObj.ForumPostModel.Id, forumPostObj.ForumPostModel, HttpContext.Session.GetString("JWToken"));
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -204,17 +195,22 @@ namespace KosmoForumClient.Controllers
             }
             else
             {
-                IEnumerable<Category> categories = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+                var tupleResponse = await _categoryRepo.GetAllAsync(SD.Categories, HttpContext.Session.GetString("JWToken"));
+                if (tupleResponse.Item1 != "")
+                {
+                    TempData["error"] = tupleResponse.Item1;
+                    return View(new ForumPostVM() { CategoryList = new List<SelectListItem>(), ForumPostModel = new ForumPost() { } });
+                }
                 ForumPostVM forumVM = new ForumPostVM
                 {
-                    CategoryList = categories.Select(i => new SelectListItem
+                    CategoryList = tupleResponse.Item2.Select(i => new SelectListItem
                     {
                         Text = i.Title,
                         Value = i.Id.ToString()
                     }),
-                    forumPost = new ForumPost()
+                    ForumPostModel = new ForumPost()
                 };
-                return View(forumVM);
+                return View(new ForumPostVM() { CategoryList = new List<SelectListItem>(),ForumPostModel = new ForumPost()});
             }
         }
 
@@ -233,7 +229,7 @@ namespace KosmoForumClient.Controllers
         public async Task<IActionResult> GetAllForumPosts()
         {
             var forumPostObj = await _forumRepo.GetAllAsync(SD.ForumPosts, HttpContext.Session.GetString("JWToken"));
-            return Json(new {data = forumPostObj});
+            return Json(new {data = forumPostObj.Item2});
         }
 
 

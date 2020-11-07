@@ -39,7 +39,7 @@ namespace KosmoForumClient.Repo
             }
 
             var errorString = await response.Content.ReadAsStringAsync();
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorString, new {message = ""}.message), Enumerable.Empty<ForumPost>());
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorString), Enumerable.Empty<ForumPost>());
 
 
         }
@@ -62,7 +62,7 @@ namespace KosmoForumClient.Repo
             }
 
             string errorObj = await response.Content.ReadAsStringAsync();
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorObj, new {message = ""}.message),
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorObj),
                 Enumerable.Empty<ForumPost>());
         }
 
@@ -94,7 +94,7 @@ namespace KosmoForumClient.Repo
 
             var errorResponse = await response.Content.ReadAsStringAsync();
 
-            return Tuple.Create(JsonConvert.DeserializeAnonymousType(errorResponse, new {message = ""}.message), false);
+            return Tuple.Create(ModelStateDeserializer.DeserializeModelState(errorResponse), false);
 
         }
 
