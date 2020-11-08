@@ -20,6 +20,8 @@ namespace KosmoForumClient.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
+        public DateTime JoinDateTime { get; set; }
+
         public string Role { get; set; }
 
         public byte[] Avatar { get; set; }

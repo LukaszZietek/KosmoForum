@@ -21,7 +21,8 @@ namespace KosmoForum.Repository
         public ForumPost GetPost(int id)
         {
             var value = _db.ForumPosts.Include(x => x.Opinions)
-                .Include(x => x.Images).FirstOrDefault(x => x.Id == id);
+                .Include(x => x.Images).Include(x => x.User).
+                FirstOrDefault(x => x.Id == id);
             return value;
         }
 

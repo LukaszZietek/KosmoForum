@@ -18,6 +18,8 @@ namespace KosmoForum.Models.Dtos
         
         public int UserId { get; set; }
 
+        public UserDto User { get; set; }
+
         public int CategoryId { get; set; }
 
         public  List<OpinionDto> Opinions { get; set; }

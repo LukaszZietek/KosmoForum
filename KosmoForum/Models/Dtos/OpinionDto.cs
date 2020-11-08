@@ -17,6 +17,8 @@ namespace KosmoForum.Models.Dtos
 
         public int UserId { get; set; }
 
+        public UserDto User { get; set; }
+
         public int ForumPostId { get; set; }
     }
 }

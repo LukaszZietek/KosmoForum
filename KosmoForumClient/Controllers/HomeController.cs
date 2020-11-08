@@ -64,7 +64,7 @@ namespace KosmoForumClient.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string returnUrl)
+        public IActionResult Login()
         {
             User obj = new User();
             return View(obj);

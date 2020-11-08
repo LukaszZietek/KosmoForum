@@ -35,7 +35,7 @@ namespace KosmoForumClient.Controllers
             return View(new ForumPost(){});
         }
 
-        public async Task<IActionResult> ForumPostInCategory(/*int id*/ string title) // category title
+        public async Task<IActionResult> ForumPostInCategory(string title) // category title
         {
             if (title == null)
             {

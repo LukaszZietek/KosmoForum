@@ -22,7 +22,16 @@
                 </div>
             </div>
             <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black">
-                ID użytkownika: @Model.forumPost.UserId
+                Nick użytkownika: @Model.forumPost.User.Username
+                Avatar użytkownika: @{
+                    var base64Avatar = Convert.ToBase64String(@Model.forumPost.User.Avatar);
+                    var imgSrcAvatar = string.Format("data:image/jpg;base64,{0}", base64Avatar);
+                                        <br />
+                                        <p align="center">
+                                            <img src="@imgSrcAvatar" style="width: 100%; height: 50px; width: 50px;" />
+                                        </p>
+                                    }
+                Data dołączenia: @Model.forumPost.User.JoinDateTime.Day/@Model.forumPost.User.JoinDateTime.Month/@Model.forumPost.User.JoinDateTime.Year
 
             </div>
         </div>
@@ -45,9 +54,20 @@
                     <p class="text-justify font-weight-light">@item.Content</p>
                 </div>
                 <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black;">
-                    ID użytkownika: @item.UserId
-                    <label>Ocena użytkownika:</label>
+                    Nick użytkownika: @item.User.Username
+                    <br/>
+                    Avatar użytkownika:
+                    @{
+                        var base64AvatarOpinion = Convert.ToBase64String(@Model.forumPost.User.Avatar);
+                        var imgSrcAvatarOpinion = string.Format("data:image/jpg;base64,{0}", base64Avatar);
+                        <br />
+                        <p align="center">
+                            <img src="@imgSrcAvatarOpinion" style="width: 100%; height: 50px; width: 50px;" />
+                        </p>
+                    }
                     <br />
+                    <label>Ocena użytkownika:</label>
+                    <br/>
                     @for (int i = (int)item.Marks; i < 5; i++)
                     {
                         <i class="fa fa-star" style="color: pink" aria-hidden="true"></i>
