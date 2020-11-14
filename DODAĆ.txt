@@ -1,9 +1,3 @@
 
 
-W cliencie w forumpostcontroller userid wpisywane na sztywno oraz categoryid,
-Stworzyć UserDto bez zwracania Id itd.
-
-Dodać pokazywanie walidacji z web api w MVC
-
-W opinionrepo dodać błędy, korzysta z get async()
 

@@ -50,91 +50,96 @@
     }
 </style>
 
-<input type="hidden" value="@TempData["error"]" id="tempDataError"/>
+<div class="container p-5" align="center">
 
-<form method="post" asp-action="Upsert" enctype="multipart/form-data">
+    <input type="hidden" value="@TempData["error"]" id="tempDataError" />
 
-    <div class="row px-2 mx-2 backgroundWhite border">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @if (Model.ForumPostModel.Id != 0)
-        {
-            <input type="hidden" id="forumPostId" asp-for="ForumPostModel.Id" />
-            title = "Edycja posta";
-        }
-        <input type="hidden" id="imagesCount" asp-for="ForumPostModel.Images.Count" />
+    <form method="post" asp-action="Upsert" enctype="multipart/form-data">
 
-        <div class="col-12 p-3">
-            <h2 class="text-primary">@title</h2>
-        </div>
-        <div class="col-8">
-            <div class="form-group row">
-                <div class="col-4">
-                    Kategoria
-                </div>
-                <div class="col-8">
-                    @Html.DropDownListFor(m => m.ForumPostModel.CategoryId, Model.CategoryList, "-Wybierz kategorie",
-                        new { @class = "form-control" })
-                    <span asp-validation-for="ForumPostModel.CategoryId" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="col-4">
-                    <label asp-for="ForumPostModel.Title"></label>
-                </div>
-                <div class="col-8">
-                    <input asp-for="ForumPostModel.Title" class="form-control" />
-                    <span asp-validation-for="ForumPostModel.Title" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-4">
-                    <label asp-for="ForumPostModel.Content"></label>
-                </div>
-                <div class="col-8">
-                    <input asp-for="ForumPostModel.Content" class="form-control" />
-                    <span asp-validation-for="ForumPostModel.Content" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-4">
-                    <label asp-for="ForumPostModel.Images"></label>
-                </div>
-                <div class="col-8">
-                    <input type="file" asp-for="ForumPostModel.Images" id="projectImage" name="files" multiple class="form-control" onchange="checkFilesCount(this)" />
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-4 offset-4">
-                    <button type="submit" class="btn btn-primary form-control">
-                        @(Model.ForumPostModel.Id != 0 ? "Uaktualnij" : "Stwórz")
-                    </button>
-                </div>
-                <div class="col-4">
-                    <a asp-action="Index" class="btn btn-success form-control">Powrót</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-4 text-right" style="width: 250px;">
-            @if (Model.ForumPostModel.Images != null)
+        <div class="shadow-lg justify-content-center p-3 w-auto" align="center">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.ForumPostModel.Id != 0)
             {
-                foreach (var item in Model.ForumPostModel.Images)
-                {
-
-                    var base64 = Convert.ToBase64String(item.Picture);
-                    var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
-                    <div class="container2">
-                        <img src="@imgSrc" style="width: 100%" />
-                        <a onclick="DeleteImage(@item.Id)" class='btn btn-danger text-white' style='cursor:pointer;'> <i class='far fa-trash-alt'></i></a>
-                    </div>
-
-                }
+                <input type="hidden" id="forumPostId" asp-for="ForumPostModel.Id" />
+                title = "Edycja posta";
             }
+            <input type="hidden" id="imagesCount" asp-for="ForumPostModel.Images.Count" />
+
+            <div class="col-12 p-3">
+                <h2 class="text-primary">@title</h2>
+            </div>
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        Kategoria
+                    </div>
+                    <div class="col-8">
+                        @Html.DropDownListFor(m => m.ForumPostModel.CategoryId, Model.CategoryList, "-Wybierz kategorie",
+                            new { @class = "form-control" })
+                        <span asp-validation-for="ForumPostModel.CategoryId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ForumPostModel.Title"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="ForumPostModel.Title" class="form-control" />
+                        <span asp-validation-for="ForumPostModel.Title" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ForumPostModel.Content"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="ForumPostModel.Content" class="form-control" />
+                        <span asp-validation-for="ForumPostModel.Content" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ForumPostModel.Images"></label>
+                    </div>
+                    <div class="col-8">
+                        <div class="custom-file">
+                            <input type="file" asp-for="ForumPostModel.Images" id="projectImage" name="files" multiple class="form-control custom-file-input" onchange="checkFilesCount(this)" />
+                            <label class="custom-file-label text-left" for="projectImage" id="projectImageLabel">Wybierz Plik</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-4 offset-4">
+                        <button type="submit" class="btn btn-primary form-control">
+                            @(Model.ForumPostModel.Id != 0 ? "Uaktualnij" : "Stwórz")
+                        </button>
+                    </div>
+                    <div class="col-4">
+                        <a asp-action="Index" class="btn btn-success form-control">Powrót</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4 text-right" style="width: 250px;">
+                @if (Model.ForumPostModel.Images != null)
+                {
+                    foreach (var item in Model.ForumPostModel.Images)
+                    {
+
+                        var base64 = Convert.ToBase64String(item.Picture);
+                        var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
+                        <div class="container2">
+                            <img src="@imgSrc" style="width: 100%" />
+                            <a onclick="DeleteImage(@item.Id)" class='btn btn-danger text-white' style='cursor:pointer;'> <i class='far fa-trash-alt'></i></a>
+                        </div>
+
+                    }
+                }
+            </div>
         </div>
-    </div>
 
-</form>
-
+    </form>
+</div>
 
 @section Scripts
 {
@@ -161,7 +166,16 @@
                 toastr.error("Załadowałeś za dużo plików, maksymalnie 3");
                 document.getElementById("projectImage").value = "";
             }
+            changeLabel(id);
 
+        }
+
+        function changeLabel(id) {
+            var outputString = "";
+            for (var i = 0; i < id.files.length; i++) {
+                outputString += id.files[i].name + ", ";
+            }
+            document.getElementById("projectImageLabel").textContent = outputString.substring(0, 40);
         }
     </script>
 }

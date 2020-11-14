@@ -49,7 +49,7 @@ function loadDataTable() {
             },
             {
                 "data": "date",
-                "render": function(data) {
+                "render": function (data) {
                     var showData = data.substring(8, 10) + "-" + data.substring(5, 7) + "-" + data.substring(0, 4);
                     return `${showData}`;
                 },
@@ -57,11 +57,19 @@ function loadDataTable() {
             },
             {
                 "data": "userId",
+                "render": function(data, type, row, meta) {
+                    var value = CutUserName(row['user']['username'],10);
+                    return `${value}`;
+                },
                 "width": "20%"
             },
             {
                 "data": "id",
                 "render": function (data) {
+                    var booleanValue = IfBelongToUser(data);
+                    if (booleanValue)
+                    {
+
                     return `<div class="text-center">
                     <a href="/forumpost/Upsert/${data}"
                     class = 'btn btn-success text-white'
@@ -72,6 +80,8 @@ function loadDataTable() {
                     style = 'cursor:pointer;'> <i class = 'far fa-trash-alt'></i></a>
                     </div>
                 `;
+                    }
+                    return ``;
                 },
                 "width": "30%"
             }
@@ -104,5 +114,27 @@ function Delete(url) {
             });
         }
     });
+}
+
+function IfBelongToUser(id) {
+    var urlLink = "/forumpost/ifauthorized/" + id;
+    var status = false;
+
+    $.ajax({
+        url: urlLink,
+        async: false,
+        success: function(data) {
+            status = data;
+        }
+    });
+
+    return status;
+}
+
+function CutUserName(userName, expectedLength) {
+    if (userName.length > expectedLength) {
+        return userName.substring(0, expectedLength) + "...";
+    }
+    return userName;
 }
 

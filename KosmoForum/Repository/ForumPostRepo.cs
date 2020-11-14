@@ -40,7 +40,7 @@ namespace KosmoForum.Repository
 
         public ICollection<ForumPost> GetAllForumPostsInCategory(int categoryId)
         {
-            var values = _db.ForumPosts.Where(x => x.CategoryId == categoryId).ToList();
+            var values = _db.ForumPosts.Include(x => x.User).Where(x => x.CategoryId == categoryId).ToList();
             return values;
         }
 

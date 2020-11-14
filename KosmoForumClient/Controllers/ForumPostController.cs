@@ -250,5 +250,29 @@ namespace KosmoForumClient.Controllers
 
             return Json(new {success = false, message = "Usuwanie zakończone niepowodzeniem!"});
         }
+
+        public async Task<bool> IfAuthorized(int id)
+        {
+            if (!( User.Identity.IsAuthenticated))
+            {
+                return false;
+            }
+
+            var forumPostTuple =
+                await _forumRepo.GetAsync(SD.ForumPosts, id, HttpContext.Session.GetString("JWToken"));
+            if (forumPostTuple.Item1 != "")
+            {
+                return false;
+            }
+
+            if ((String.Equals(User.Identity.Name.Trim(), forumPostTuple.Item2.User.Username.Trim(), StringComparison.CurrentCultureIgnoreCase)) ||
+                (User.IsInRole("admin")))
+            {
+                return true;
+            }
+
+            return false;
+
+        }
     }
 }
