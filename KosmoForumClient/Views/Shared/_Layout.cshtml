@@ -30,23 +30,17 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Kategorie</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="ForumPost" asp-action="Index">Posty</a>
                         </li>
-
+                    
 
                         @if (httpAccessor.HttpContext.Session.GetString("JWToken") != null &&
                        httpAccessor.HttpContext.Session.GetString("JWToken").ToString().Length > 0)
                         {
-                            <li class="nav-item">
+                            <li class="nav-item ml-auto">
                                 <a class="nav-link text-white" asp-controller="Home" asp-action="Logout">Wyloguj</a>
                             </li>
                             <li class="nav-item dropdown">
@@ -65,10 +59,10 @@
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-white" asp-controller="Home" asp-action="Login">Zaloguj</a>
+                            <li class="nav-item ml-auto" style="float: left;">
+                                    <a class="nav-link text-white" asp-controller="Home" asp-action="Login">Zaloguj</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item" style="float: left;">
                                 <a class="nav-link text-white" asp-controller="Home" asp-action="Register">Zarejestruj</a>
                             </li>
                         }

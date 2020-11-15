@@ -31,7 +31,7 @@ function loadDataTable() {
                 "data": "content",
                 "render": function (data, type, row, meta) {
                     var value = row['forumPostId'];
-                    return `<a href="/forumpost/readforumpost/${value}">${data.substring(0,35) + " ..."}</a>`;
+                    return `<h6><a href="/forumpost/readforumpost/${value}" class="text-primary">${data.substring(0,35) + " ..."}</a></h6>`;
                 },
                 "width": "35%"
             },

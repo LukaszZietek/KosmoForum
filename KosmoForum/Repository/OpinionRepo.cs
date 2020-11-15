@@ -33,7 +33,7 @@ namespace KosmoForum.Repository
         {
             //var values = _db.Opinions.Where(x => x.ForumPostId == forumPostId)
             //    .Include(x => x.User).ToList();
-            var values = _db.Opinions
+            var values = _db.Opinions.Include(x => x.User)
                 .Where(x => x.ForumPostId == forumPostId).ToList();
 
             return values;

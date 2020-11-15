@@ -44,13 +44,18 @@
             <div class="row">
                 <div class="container-fluid w-75" style="background-color: #EBE8E8;">
                     <span class="font-weight-bold">Data utworzenia: @item.CreationDateTime</span>
-                    <span class="font-weight-bold float-right">
-                        <a href="@Url.Action("Upsert","Opinions",new {forumPostId = Model.forumPost.Id, opinionId = item.Id})"
-                           class='btn btn-success text-white' 
-                           style='cursor: pointer;'> <i class='far fa-edit'></i></a>
-                    </span>
+                    @if (User.Identity.IsAuthenticated &&
+                         (User.IsInRole("admin") || User.Identity.Name.Trim().ToLower() == item.User.Username.Trim().ToLower()))
+                    {
+                        <span class="font-weight-bold float-right">
+                            <a href="@Url.Action("Upsert", "Opinions", new {forumPostId = Model.forumPost.Id, opinionId = item.Id})"
+                               class='btn btn-success text-white'
+                               style='cursor: pointer;'> <i class='far fa-edit'></i></a>
+                        </span>
+                    }
                     <br />
                     <br />
+
                     <p class="text-justify font-weight-light">@item.Content</p>
                 </div>
                 <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black;">

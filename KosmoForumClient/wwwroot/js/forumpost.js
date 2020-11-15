@@ -43,7 +43,7 @@ function loadDataTable() {
                 "data": "title",
                 "render": function (data, type, row, meta) {
                     var value = row['id'];
-                    return `<a href="/forumpost/readforumpost/${value}">${data}</a>`;
+                    return `<h6><a href="/forumpost/readforumpost/${value}" class="text-primary align-middle">${data}</a></h6>`;
                 },
                 "width": "20%"
             },

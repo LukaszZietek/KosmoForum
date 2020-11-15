@@ -35,7 +35,8 @@ namespace KosmoForum.Repository
 
         public ICollection<ForumPost> GetAllPosts()
         {
-            return _db.ForumPosts.OrderBy(x => x.Title).ToList();
+            return _db.ForumPosts.Include(x => x.User)
+                .OrderBy(x => x.Title).ToList();
         }
 
         public ICollection<ForumPost> GetAllForumPostsInCategory(int categoryId)
@@ -46,7 +47,9 @@ namespace KosmoForum.Repository
 
         public ICollection<ForumPost> GetAllForumPostsForUser(int userId)
         {
-            var values = _db.ForumPosts.Where(x => x.UserId == userId).OrderBy(x => x.Date).ToList();
+            var values = _db.ForumPosts
+                .Include( x => x.User)
+                .Where(x => x.UserId == userId).OrderBy(x => x.Date).ToList();
             return values;
         }
 

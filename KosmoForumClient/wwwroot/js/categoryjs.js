@@ -28,7 +28,7 @@ function loadDataTable() {
             {
                 "data": "image",
                 "render": function (data) {
-                    return `<img src="data:image/jpg;base64,${data}" style='width: 50px; height:50px;' />`;
+                    return `<img class="rounded-circle" src="data:image/jpg;base64,${data}" style='width: 50px; height:50px;' />`;
                     
                 },
                 "width": "10%",
@@ -36,7 +36,7 @@ function loadDataTable() {
             {
                 "data": "title",
                 "render": function (data) {
-                    return `<a href="forumpost/ForumPostInCategory?title=${data}">${data}</a>`;
+                    return `<h6><a href="forumpost/ForumPostInCategory?title=${data}" class="text-primary align-middle">${data}</a></h6>`;
                 },
                 "width": "40%"
             },
