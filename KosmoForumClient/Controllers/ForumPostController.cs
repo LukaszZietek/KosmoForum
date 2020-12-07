@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using X.PagedList;
+using X.PagedList.Mvc.Core;
 
 namespace KosmoForumClient.Controllers
 {
@@ -54,8 +56,11 @@ namespace KosmoForumClient.Controllers
             });
         }
 
-        public async  Task<IActionResult> ReadForumPost(int id) // forumpost id
+        public async Task<IActionResult> ReadForumPost(int id, int? page)
         {
+            int currentPage = page ?? 1;
+            int opinionOnPage = 5;
+
             var obj = await _forumRepo.GetAsync(SD.ForumPosts, id, HttpContext.Session.GetString("JWToken"));
 
             if (obj.Item1 != "")
@@ -75,6 +80,7 @@ namespace KosmoForumClient.Controllers
                 category = categoryObj.Item2,
                 forumPost = obj.Item2
             };
+            ViewBag.opinions = objVM.forumPost.Opinions.ToPagedList(currentPage, opinionOnPage);
 
             return View(objVM);
         }
@@ -229,6 +235,12 @@ namespace KosmoForumClient.Controllers
             var objToReturn = await _forumRepo.GetAllFromCategory(SD.ForumPosts, categoryId.GetValueOrDefault(), HttpContext.Session.GetString("JWToken"));
             return Json(new {data = objToReturn.Item2});
 
+        }
+
+
+        public IActionResult GetOpinionViewComponent(int forumPostId, int? opinionId)
+        {
+            return ViewComponent("Opinion", new { forumPostId, opinionId });
         }
 
         public async Task<IActionResult> GetAllForumPosts()

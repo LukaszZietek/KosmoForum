@@ -23,10 +23,6 @@ namespace KosmoForum.DbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<ForumPost>()
-            //    .HasMany(frm => frm.Images).WithOne(frm => frm.ForumPost).OnDelete(DeleteBehavior.NoAction);
-            //modelBuilder.Entity<ForumPost>()
-            //   .HasMany(x => x.Opinions).WithOne(x => x.ForumPost).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ForumPost>().HasMany(x => x.Opinions).WithOne(x => x.ForumPost)
                 .HasForeignKey(x => x.ForumPostId).OnDelete(DeleteBehavior.Cascade);
 
@@ -49,11 +45,19 @@ namespace KosmoForum.DbContext
                 .HasMany(x => x.ForumPosts).WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
 
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
+        }
+
+        
+
+        private void Seed(ModelBuilder modelBuilder)
+        {
+            ;
         }
     }
 }

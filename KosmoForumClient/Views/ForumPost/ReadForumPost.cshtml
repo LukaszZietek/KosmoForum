@@ -1,94 +1,153 @@
-﻿@model KosmoForumClient.Models.View.ForumPostDetailsVM
+﻿@using X.PagedList.Mvc.Core
+@using X.PagedList
+@using X.PagedList.Mvc.Core.Common
+@model KosmoForumClient.Models.View.ForumPostDetailsVM
 
 
+    <input type="hidden" value="@TempData["error"]" id="tempDataError" />
 
-    <div class="p-4" style="border-radius: 20px;">
-        <h1 class="align-items-center justify-content-center p-5 text-center">@Model.forumPost.Title</h1>
-        <div class="row">
-            <div class="container-fluid w-75" style="background-color: #EBE8E8;">
-                <span class="font-weight-bold">Data utworzenia: @Model.forumPost.Date</span> <span class="font-weight-bold float-right">Kategoria: @Model.category.Title</span>
-                <br />
-                <br />
-                <p class="text-justify font-weight-light">@Model.forumPost.Content</p>
-                <div class="row">
-                    @foreach (var item in Model.forumPost.Images)
-                    {
-                        var base64 = Convert.ToBase64String(item.Picture);
-                        var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
-                        <div class="rounded mx-auto d-block p-5">
-                            <img src="@imgSrc" style="width: 100%; height: 200px; width: 200px;" />
-                        </div>
+<div class="container p-4 w-auto" align="center" style="border-radius: 20px;">
+        <div class="col-xs-1 bg-white shadow-lg rounded justify-content-center p-3 w-auto" align="center">
+            <h1 class="align-items-center justify-content-center p-5 text-center">@Model.forumPost.Title</h1>
+            <div class="row">
+                <div class="container-fluid w-75">
+                    <span class="font-weight-bold">Data utworzenia: @Model.forumPost.Date</span> <span class="font-weight-bold float-right">Kategoria: @Model.category.Title</span>
+                    <br />
+                    <br />
+                    <p class="text-justify font-weight-light">@Model.forumPost.Content</p>
+                    <div class="row">
+                        @foreach (var item in Model.forumPost.Images)
+                        {
+                            var base64 = Convert.ToBase64String(item.Picture);
+                            var imgSrc = string.Format("data:image/jpg;base64,{0}", base64);
+                            <div class="rounded mx-auto d-block p-5">
+                                <img src="@imgSrc" style="width: 100%; height: 200px; width: 200px;" />
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="w-25 p-5" style="border-left: 1px dotted black">
+                    Nick użytkownika: @Model.forumPost.User.Username
+                    Avatar użytkownika:
+                    @{
+                        var base64Avatar = Convert.ToBase64String(@Model.forumPost.User.Avatar);
+                        var imgSrcAvatar = string.Format("data:image/jpg;base64,{0}", base64Avatar);
+                        <br />
+                        <p align="center">
+                            <img src="@imgSrcAvatar" style="width: 100%; height: 50px; width: 50px;" />
+                        </p>
                     }
+                    Data dołączenia: @Model.forumPost.User.JoinDateTime.Day/@Model.forumPost.User.JoinDateTime.Month/@Model.forumPost.User.JoinDateTime.Year
+
                 </div>
             </div>
-            <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black">
-                Nick użytkownika: @Model.forumPost.User.Username
-                Avatar użytkownika: @{
-                    var base64Avatar = Convert.ToBase64String(@Model.forumPost.User.Avatar);
-                    var imgSrcAvatar = string.Format("data:image/jpg;base64,{0}", base64Avatar);
-                                        <br />
-                                        <p align="center">
-                                            <img src="@imgSrcAvatar" style="width: 100%; height: 50px; width: 50px;" />
-                                        </p>
-                                    }
-                Data dołączenia: @Model.forumPost.User.JoinDateTime.Day/@Model.forumPost.User.JoinDateTime.Month/@Model.forumPost.User.JoinDateTime.Year
-
-            </div>
+            <br />
+            <br />
+            <br />
         </div>
         <br />
         <br />
-        <br />
-        
-        @foreach(var item in Model.forumPost.Opinions)
-        {
-            <div class="row">
-                <div class="container-fluid w-75" style="background-color: #EBE8E8;">
-                    <span class="font-weight-bold">Data utworzenia: @item.CreationDateTime</span>
-                    @if (User.Identity.IsAuthenticated &&
-                         (User.IsInRole("admin") || User.Identity.Name.Trim().ToLower() == item.User.Username.Trim().ToLower()))
-                    {
-                        <span class="font-weight-bold float-right">
-                            <a href="@Url.Action("Upsert", "Opinions", new {forumPostId = Model.forumPost.Id, opinionId = item.Id})"
-                               class='btn btn-success text-white'
-                               style='cursor: pointer;'> <i class='far fa-edit'></i></a>
-                        </span>
-                    }
-                    <br />
-                    <br />
 
-                    <p class="text-justify font-weight-light">@item.Content</p>
-                </div>
-                <div class="w-25 p-3" style="background-color: #EBE8E8; border-left: 1px dotted black;">
-                    Nick użytkownika: @item.User.Username
-                    <br/>
-                    Avatar użytkownika:
-                    @{
-                        var base64AvatarOpinion = Convert.ToBase64String(@Model.forumPost.User.Avatar);
-                        var imgSrcAvatarOpinion = string.Format("data:image/jpg;base64,{0}", base64Avatar);
+        @foreach (var item in ViewBag.opinions)
+        {
+            <div class="col-xs-1 bg-white shadow-lg rounded justify-content-center p-3 w-100" align="center">
+                <div class="row">
+                    <div class="container-fluid w-75">
+                        <span class="font-weight-bold">Data utworzenia: @item.CreationDateTime</span>
+                        @if (User.Identity.IsAuthenticated &&
+                          (User.IsInRole("admin") || User.Identity.Name.Trim().ToLower() == item.User.Username.Trim().ToLower()))
+                        {
+                    <span class="font-weight-bold float-right">
+                        <a onclick="showOpinionFeature(@item.Id)"
+                           class='btn btn-success text-white'
+                           style='cursor: pointer;'> <i class='far fa-edit'></i></a>
+                    </span>
+                        }
                         <br />
-                        <p align="center">
-                            <img src="@imgSrcAvatarOpinion" style="width: 100%; height: 50px; width: 50px;" />
-                        </p>
-                    }
-                    <br />
-                    <label>Ocena użytkownika:</label>
-                    <br/>
-                    @for (int i = (int)item.Marks; i < 5; i++)
-                    {
-                        <i class="fa fa-star" style="color: pink" aria-hidden="true"></i>
-                    }
-                    @for (int i = 0; i < (int)item.Marks; i++)
-                    {
-                        <i class="fa fa-star-o" style="color: pink" aria-hidden="true"></i>
-                    }
+                        <br />
+
+                        <p class="text-justify font-weight-light">@item.Content</p>
+                    </div>
+                    <div class="w-25 p-3" style="border-left: 1px dotted black;">
+                        Nick użytkownika: @item.User.Username
+                        <br />
+                        Avatar użytkownika:
+                        @{
+                            var base64AvatarOpinion = Convert.ToBase64String(@Model.forumPost.User.Avatar);
+                            var imgSrcAvatarOpinion = string.Format("data:image/jpg;base64,{0}", base64Avatar);
+                            <br />
+                            <p align="center">
+                                <img src="@imgSrcAvatarOpinion" style="width: 100%; height: 50px; width: 50px;" />
+                            </p>
+                        }
+                        <br />
+                        <label>Ocena użytkownika:</label>
+                        <br />
+                        @for (int i = 0; i < (int)item.Marks +1 ; i++)
+                        {
+                            <i class="fa fa-star" style="color: pink" aria-hidden="true"></i>
+                        }
+                        @for (int i = (int)item.Marks + 1; i < 5; i++)
+                        {
+                            <i class="fa fa-star-o" style="color: pink" aria-hidden="true"></i>
+                        }
+                    </div>
                 </div>
             </div>
             <br />
             <br />
         }
-        
+        @if (User.Identity.IsAuthenticated)
+        {
 
-        <div class="col-6 text-right">
-            <a href="@Url.Action("Upsert","Opinions", new {forumPostId = Model.forumPost.Id})" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+            <div class="col-6 text-right">
+                <a class="btn btn-primary text-white" onclick="showOpinionFeature()"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+            </div>
+        }
+        else
+        {
+            <div class="col-6 text-right">
+                <a href="@Url.ActionLink("Login","Home")?returnUrl=/forumPost/ReadForumPost/@Model.forumPost.Id" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+            </div>
+        }
+
+        <div id="dynamicContent">
         </div>
+
+        @Html.PagedListPager((IPagedList)ViewBag.opinions, page => Url.Action("ReadForumPost", new { page = page }),
+            new PagedListRenderOptions
+                {
+                LiElementClasses = new string[] { "page-item" },
+                PageClasses = new string[] { "page-link" }
+            })
+
+
+
     </div>
+
+
+@section Scripts
+{
+    <script src="~/js/showErrorsFromApi.js"></script>
+
+    <script src="~/js/opinionsStar.js"></script>
+    
+    <script>
+        function showOpinionFeature(opinionId) {
+
+            var _url = '@Url.Action("GetOpinionViewComponent", "ForumPost")';
+            $.ajax({
+                type: "GET",
+                url: _url,
+                data: { forumPostId: @Model.forumPost.Id, opinionId },
+                success: function (result) {
+                    $("#dynamicContent").html(result);
+                },
+            });
+
+        }
+
+    </script>
+    
+
+}
