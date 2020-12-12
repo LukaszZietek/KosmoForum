@@ -150,13 +150,11 @@ namespace KosmoForum.Controllers
         {
             if (opinionCreateObj == null)
             {
-                //return BadRequest(ModelState);
                 return BadRequest(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
             }
 
             if (!ModelState.IsValid)
             {
-                //return BadRequest(ModelState);
                 return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
             }
 
@@ -164,7 +162,6 @@ namespace KosmoForum.Controllers
             opinion.CreationDateTime = DateTime.Now;
             if (!_repo.CreateOpinion(opinion))
             {
-                //ModelState.AddModelError("",$"Error occurred during creating opinion with content : {opinion.Content}");
                 return StatusCode(500, new {message = $"Error occurred during creating opinion with content : {opinion.Content}" });
             }
 

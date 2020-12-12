@@ -107,7 +107,8 @@
         else
         {
             <div class="col-6 text-right">
-                <a href="@Url.ActionLink("Login","Home")?returnUrl=/forumPost/ReadForumPost/@Model.forumPost.Id" class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
+                <a href="@Url.ActionLink("Login","Home")?returnUrl=/forumPost/ReadForumPost/@Model.forumPost.Id"
+                   class="btn btn-primary text-white"><i class="fas fa-plus"></i> &nbsp; Dodaj Komentarz</a>
             </div>
         }
 
@@ -142,7 +143,7 @@
                 data: { forumPostId: @Model.forumPost.Id, opinionId },
                 success: function (result) {
                     $("#dynamicContent").html(result);
-                },
+                }
             });
 
         }

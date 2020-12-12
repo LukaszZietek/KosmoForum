@@ -28,29 +28,29 @@ namespace KosmoForumClient.Controllers
             return View(new Opinion(){});
         }
 
-        [Authorize]
-        public async Task<IActionResult> Upsert(int forumPostId, int? opinionId) // forumpostId and alternative u can call with opinion id to update it.
-        {
-            Opinion opinionObj = new Opinion();
-            if (opinionId == null)
-            {
-                opinionObj.ForumPostId = forumPostId;
-                return View(opinionObj);
-            }
+        //[Authorize]
+        //public async Task<IActionResult> Upsert(int forumPostId, int? opinionId) // forumpostId and alternative u can call with opinion id to update it.
+        //{
+        //    Opinion opinionObj = new Opinion();
+        //    if (opinionId == null)
+        //    {
+        //        opinionObj.ForumPostId = forumPostId;
+        //        return View(opinionObj);
+        //    }
 
-            var opinionObjTuple = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault(),HttpContext.Session.GetString("JWToken"));
-            if (opinionObjTuple.Item1 != "")
-            {
-                TempData["error"] = opinionObjTuple.Item1;
-                return View(opinionObj);
-            }
+        //    var opinionObjTuple = await _opinionRepo.GetAsync(SD.Opinions, opinionId.GetValueOrDefault(),HttpContext.Session.GetString("JWToken"));
+        //    if (opinionObjTuple.Item1 != "")
+        //    {
+        //        TempData["error"] = opinionObjTuple.Item1;
+        //        return View(opinionObj);
+        //    }
 
-            opinionObj = opinionObjTuple.Item2;
+        //    opinionObj = opinionObjTuple.Item2;
 
-            opinionObj.ForumPostId = forumPostId;
-            return View(opinionObj);
+        //    opinionObj.ForumPostId = forumPostId;
+        //    return View(opinionObj);
 
-        }
+        //}
 
         [ValidateAntiForgeryToken]
         [HttpPost]
@@ -69,7 +69,8 @@ namespace KosmoForumClient.Controllers
                 if (returnedTuple.Item1 != "")
                 {
                     TempData["error"] = returnedTuple.Item1;
-                    return View(opinionObj);
+                    //return View(opinionObj);
+                    return RedirectToAction("ReadForumPost", "ForumPost", new { id = opinionObj.ForumPostId });
                 }
 
                 opinionObj.UserId = returnedTuple.Item2;
@@ -80,7 +81,8 @@ namespace KosmoForumClient.Controllers
                     if (result.Item1 != "")
                     {
                         TempData["error"] = result.Item1;
-                        return View(opinionObj);
+                        //return View(opinionObj);
+                        return RedirectToAction("ReadForumPost", "ForumPost", new {id = opinionObj.ForumPostId});
                     }
                 }
                 else
@@ -89,7 +91,8 @@ namespace KosmoForumClient.Controllers
                     if (result.Item1 != "")
                     {
                         TempData["error"] = result.Item1;
-                        return View(opinionObj);
+                        //return View(opinionObj);
+                        return RedirectToAction("ReadForumPost", "ForumPost", new { id = opinionObj.ForumPostId });
                     }
                 }
 
@@ -97,7 +100,8 @@ namespace KosmoForumClient.Controllers
             }
             else
             {
-                return View(opinionObj);
+                //return View(opinionObj);
+                return RedirectToAction("ReadForumPost", "ForumPost", new { id = opinionObj.ForumPostId });
             }
 
         }

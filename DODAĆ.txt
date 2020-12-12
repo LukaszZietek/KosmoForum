@@ -1,2 +1,0 @@
-Gdy wystąpi błąd w opinion upsert (sprawdzić)
-Posprawdzać returny z opinion i forumpost
