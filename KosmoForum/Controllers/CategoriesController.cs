@@ -117,34 +117,26 @@ namespace KosmoForum.Controllers
             if (categoryDto == null)
             {
                 return BadRequest(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
-
-                //return BadRequest(ModelState);
             }
 
             if (_repo.CategoryExists(categoryDto.Title))
             {
-                //ModelState.AddModelError("", "Category with this title already exists");
-                //return StatusCode(404, ModelState);
-                return StatusCode(404, new { message = "Category with this title already exists" });
+                return StatusCode(400, new { message = "Category with this title already exists" });
             }
 
             if (!ModelState.IsValid)
             {
-              
                 return BadRequest(new { message = ModelStateToString.ConvertModelStateToString(ModelState) });
-
-                //return BadRequest(ModelState);
             }
 
             var categoryObj = _mapper.Map<Category>(categoryDto);
             categoryObj.CreationDateTime = DateTime.Now;
             if (!_repo.CreateCategory(categoryObj))
             {
-                //ModelState.AddModelError("", $"Something went wrong when saving the record {categoryDto.Title}");
                 return StatusCode(500, new {message = $"Something went wrong when saving the record {categoryDto.Title}" });
             }
 
-            return CreatedAtRoute("GetCategory", new {Version = HttpContext.GetRequestedApiVersion().ToString() ,id = categoryObj.Id}, categoryObj);
+            return CreatedAtRoute("GetCategory", new {Version = HttpContext.GetRequestedApiVersion().ToString(), id = categoryObj.Id},  categoryObj);
 
         }
 
