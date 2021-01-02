@@ -51,12 +51,12 @@ namespace KosmoForumTests.Controllers
             {
                 _mockMapper.Setup(mapper => mapper.Map<CategoryDto>(item))
                     .Returns(new CategoryDto()
-                        {
-                            Description = item.Description, 
-                            Id = item.Id,
-                            Image = item.Image,
-                            Title = item.Title
-                        });
+                    {
+                        Description = item.Description,
+                        Id = item.Id,
+                        Image = item.Image,
+                        Title = item.Title
+                    });
             }
 
             var result = _controller.GetCategories();
@@ -263,6 +263,155 @@ namespace KosmoForumTests.Controllers
             Assert.Equal(emp.Title,categoryCreateObj.Title);
             Assert.Equal(emp.Description,categoryCreateObj.Description);
             Assert.Equal(emp.Image,categoryCreateObj.Image);
+
+        }
+
+        [Fact]
+        public void UpdateCategory_WithoutObjectArgumentShouldReturnBadRequest()
+        {
+            var result = _controller.UpdateCategory(1,null);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCategory_WithDifferentIdShouldReturnBadRequest()
+        {
+            //Category obj = null;
+            var categoryUpdateDtoObj = new CategoryUpdateDto
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis nowy",
+                Id = 5,
+                Image = null,
+                Title = "Tytul Opisowy"
+            };
+            //var categoryUpdateObj = new Category()
+            //{
+            //    CreationDateTime = DateTime.Now,
+            //    Description = categoryUpdateDtoObj.Description,
+            //    ForumPosts = null,
+            //    Id = categoryUpdateDtoObj.Id,
+            //    Image = categoryUpdateDtoObj.Image,
+            //    Title = categoryUpdateDtoObj.Title
+            //};
+            //_mockMapper.Setup(map => map.Map<Category>(categoryUpdateObj)).Returns(categoryUpdateObj);
+            //_mockRepo.Setup(repo => repo.UpdateCategory(categoryUpdateObj)).Callback<Category>(x => obj = x).Returns(true);
+
+            var result = _controller.UpdateCategory(1, categoryUpdateDtoObj);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCategory_WhenModelStateIsNotValidShouldReturnBadRequest()
+        {
+            _controller.ModelState.AddModelError(" ","Object doesn't have title");
+
+            var result = _controller.UpdateCategory(3, new CategoryUpdateDto()
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis",
+                Id = 3,
+                Image = null,
+                Title = null
+            });
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCategory_WhenTitleWillNotBeUniqueShouldReturnBadRequest()
+        {
+            var categoryUpdateDtoObj = new CategoryUpdateDto
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis nowy",
+                Id = 1,
+                Image = null,
+                Title = "Tytul Opisowy"
+            };
+            _mockRepo.Setup(repo => repo.GetCategory(categoryUpdateDtoObj.Title)).Returns(new Category()
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis",
+                Id = 33,
+                Image = null,
+                Title = categoryUpdateDtoObj.Title
+            });
+
+            var result = _controller.UpdateCategory(1, categoryUpdateDtoObj);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void UpdateCategory_WhenSystemErrorOccurredShouldReturn500StatusCode()
+        {
+            Category obj = null;
+            var categoryUpdateDtoObj = new CategoryUpdateDto
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis nowy",
+                Id = 1,
+                Image = null,
+                Title = "Tytul Opisowy"
+            };
+            var categoryUpdateObj = new Category()
+            {
+                CreationDateTime = DateTime.Now,
+                Description = categoryUpdateDtoObj.Description,
+                ForumPosts = null,
+                Id = categoryUpdateDtoObj.Id,
+                Image = categoryUpdateDtoObj.Image,
+                Title = categoryUpdateDtoObj.Title
+            };
+            _mockMapper.Setup(map => map.Map<Category>(categoryUpdateDtoObj)).Returns(categoryUpdateObj);
+            _mockRepo.Setup(repo => repo.UpdateCategory(categoryUpdateObj)).Callback<Category>(x => obj = x).Returns(false);
+            _mockRepo.Setup(repo => repo.GetCategory(categoryUpdateDtoObj.Title)).Returns(categoryUpdateObj);
+
+
+            var result = _controller.UpdateCategory(1, categoryUpdateDtoObj);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+
+            _mockRepo.Verify(repo => repo.GetCategory(categoryUpdateDtoObj.Title), Times.Once);
+            _mockRepo.Verify(repo => repo.UpdateCategory(categoryUpdateObj), Times.Once);
+            Assert.Equal(StatusCodes.Status500InternalServerError, objectResult.StatusCode);
+        }
+
+        [Fact]
+        public void UpdateCategory_WithCorrectDataShouldReturnNoContent()
+        {
+            Category obj = null;
+            var categoryUpdateDtoObj = new CategoryUpdateDto
+            {
+                CreationDateTime = DateTime.Now,
+                Description = "Opis nowy",
+                Id = 1,
+                Image = null,
+                Title = "Tytul Opisowy"
+            };
+            var categoryUpdateObj = new Category()
+            {
+                CreationDateTime = DateTime.Now,
+                Description = categoryUpdateDtoObj.Description,
+                ForumPosts = null,
+                Id = categoryUpdateDtoObj.Id,
+                Image = categoryUpdateDtoObj.Image,
+                Title = categoryUpdateDtoObj.Title
+            };
+            _mockMapper.Setup(map => map.Map<Category>(categoryUpdateDtoObj)).Returns(categoryUpdateObj);
+            _mockRepo.Setup(repo => repo.UpdateCategory(categoryUpdateObj)).Callback<Category>(x => obj = x).Returns(true);
+            _mockRepo.Setup(repo => repo.GetCategory(categoryUpdateDtoObj.Title)).Returns(categoryUpdateObj);
+
+
+            var result = _controller.UpdateCategory(1, categoryUpdateDtoObj);
+
+            _mockRepo.Verify(repo => repo.GetCategory(categoryUpdateDtoObj.Title), Times.Once);
+            _mockRepo.Verify(repo => repo.UpdateCategory(categoryUpdateObj),Times.Once);
+            Assert.IsType<NoContentResult>(result);
+            Assert.Equal(categoryUpdateObj.Title,obj.Title);
+            Assert.Equal(categoryUpdateObj.Description,obj.Description);
 
         }
 
