@@ -32,6 +32,7 @@ namespace KosmoForumTests.Controllers
             _mockMapper = new Mock<IMapper>();
             _controller = new CategoriesController(_mockRepo.Object,_mockMapper.Object);
             _dummyData = new CategoryFakeRepo();
+            SetupContextClass();
         }
 
         [Fact]
@@ -255,7 +256,6 @@ namespace KosmoForumTests.Controllers
                 .Returns(categoryCreateObj);
             _mockRepo.Setup(repo => repo.CreateCategory(categoryCreateObj))
                 .Callback<Category>(x => emp = x).Returns(true);
-            SetupContextClass();
 
             var result = _controller.CreateCategory(categoryCreateDtoObj);
 
@@ -276,8 +276,7 @@ namespace KosmoForumTests.Controllers
 
         [Fact]
         public void UpdateCategory_WithDifferentIdShouldReturnBadRequest()
-        {
-            //Category obj = null;
+        { ;
             var categoryUpdateDtoObj = new CategoryUpdateDto
             {
                 CreationDateTime = DateTime.Now,
@@ -286,17 +285,6 @@ namespace KosmoForumTests.Controllers
                 Image = null,
                 Title = "Tytul Opisowy"
             };
-            //var categoryUpdateObj = new Category()
-            //{
-            //    CreationDateTime = DateTime.Now,
-            //    Description = categoryUpdateDtoObj.Description,
-            //    ForumPosts = null,
-            //    Id = categoryUpdateDtoObj.Id,
-            //    Image = categoryUpdateDtoObj.Image,
-            //    Title = categoryUpdateDtoObj.Title
-            //};
-            //_mockMapper.Setup(map => map.Map<Category>(categoryUpdateObj)).Returns(categoryUpdateObj);
-            //_mockRepo.Setup(repo => repo.UpdateCategory(categoryUpdateObj)).Callback<Category>(x => obj = x).Returns(true);
 
             var result = _controller.UpdateCategory(1, categoryUpdateDtoObj);
 
@@ -415,6 +403,41 @@ namespace KosmoForumTests.Controllers
 
         }
 
+        [Fact]
+        public void DeleteCategory_WithIdWhichIsNotPresentInDatabaseShouldReturnNotFound()
+        {
+            _mockRepo.Setup(x => x.CategoryExists(It.IsAny<int>())).Returns(false);
+
+            var result = _controller.DeleteCategory(5);
+
+            Assert.IsType<NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public void DeleteCategory_WithCorrectIdWhenSystemErrorOccured()
+        {
+            _mockRepo.Setup(x => x.CategoryExists(It.IsAny<int>())).Returns(true);
+            _mockRepo.Setup(x => x.GetCategory(3)).Returns(_dummyData.categoriesList[3]);
+            _mockRepo.Setup(repo => repo.DeleteCategory(_dummyData.categoriesList[3])).Returns(false);
+
+            var result = _controller.DeleteCategory(3);
+
+            var resultObject = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(StatusCodes.Status500InternalServerError,resultObject.StatusCode);
+        }
+
+        [Fact]
+        public void DeleteCategory_WithCorrectIdShouldReturnNoContent()
+        {
+            _mockRepo.Setup(x => x.CategoryExists(It.IsAny<int>())).Returns(true);
+            _mockRepo.Setup(x => x.GetCategory(3)).Returns(_dummyData.categoriesList[3]);
+            _mockRepo.Setup(repo => repo.DeleteCategory(_dummyData.categoriesList[3])).Returns(true);
+
+            var result = _controller.DeleteCategory(3);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
         private void SetupContextClass()
         {
             var featureCollection = new Mock<IFeatureCollection>();
@@ -433,6 +456,7 @@ namespace KosmoForumTests.Controllers
             controllerContextMock.Object.HttpContext = httpContext.Object;
             _controller.ControllerContext = controllerContextMock.Object;
         }
+      
 
 
 
