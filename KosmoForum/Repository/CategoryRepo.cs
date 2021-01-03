@@ -20,7 +20,7 @@ namespace KosmoForum.Repository
         public ICollection<Category> GetAllCategories()
         {
             var obj = _db.Categories.OrderBy(x => x.Title).ToList();
-            return obj;
+            return obj.Count > 0 ? obj : null;
         }
 
         public Category GetCategory(int id)
