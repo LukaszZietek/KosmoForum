@@ -114,6 +114,11 @@ namespace KosmoForum.Repository
             return value;
         }
 
+        public bool CategoryIfExists(int categoryId)
+        {
+            return _db.Categories.Any(x => x.Id == categoryId);
+        }
+
         public bool Save()
         {
             return _db.SaveChanges() >= 0;

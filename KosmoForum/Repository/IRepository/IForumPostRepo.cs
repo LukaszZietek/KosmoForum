@@ -25,5 +25,6 @@ namespace KosmoForum.Repository.IRepository
         bool ForumPostIfExist(string title);
         bool Save();
 
+        bool CategoryIfExists(int categoryId);
     }
 }

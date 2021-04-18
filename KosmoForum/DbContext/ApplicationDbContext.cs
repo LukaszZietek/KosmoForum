@@ -55,7 +55,7 @@ namespace KosmoForum.DbContext
 
         
 
-        private void Seed(ModelBuilder modelBuilder)
+        private void Seed(ModelBuilder modelBuilder) // utwórz nową klasę która będzie przyjmować w konstruktorze dbContext i operować na nim
         {
             ;
         }

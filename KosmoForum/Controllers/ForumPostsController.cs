@@ -168,7 +168,12 @@ namespace KosmoForum.Controllers
             if (_repo.ForumPostIfExist(forumPostDto.Title))
             {
                 //ModelState.AddModelError("","Post with this title already exists");
-                return StatusCode(404,new {message = "Post with this title already exists" });
+                return NotFound(new {message = "Post with this title already exists"});
+            }
+
+            if (!_repo.CategoryIfExists(forumPostDto.CategoryId))
+            {
+                return BadRequest(new {message = "Category with this id isn't exist"});
             }
 
             if (!ModelState.IsValid)
@@ -206,6 +211,11 @@ namespace KosmoForum.Controllers
             {
                 /*return BadRequest(ModelState);*/
                 return BadRequest(new {message = ModelStateToString.ConvertModelStateToString(ModelState)});
+            }
+
+            if (!_repo.CategoryIfExists(forumPostDto.CategoryId))
+            {
+                return BadRequest(new {message = "Category with this id isn't exist"});
             }
 
             if (!ModelState.IsValid)

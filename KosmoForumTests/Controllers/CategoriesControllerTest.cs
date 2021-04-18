@@ -183,6 +183,7 @@ namespace KosmoForumTests.Controllers
             Assert.IsType<BadRequestObjectResult>(result);
         }
 
+        [Fact]
         public void CreateCategory_IfCategoryWithThisTitleAlreadyExistsShouldReturnBadRequest()
         {
             _mockRepo.Setup(repo => repo.CategoryExists(It.IsAny<string>())).Returns(true);

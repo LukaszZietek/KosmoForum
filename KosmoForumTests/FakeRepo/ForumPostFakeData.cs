@@ -10,6 +10,8 @@ namespace KosmoForumTests.FakeRepo
     {
         public List<ForumPost> dummyForumPosts;
         public List<ForumPostDto> dummyForumPostsDtos;
+        public ForumPostCreateDto dummyForumPostCreateDto;
+        public ForumPostUpdateDto dummyForumPostUpdateDto;
 
         public ForumPostFakeData()
         {
@@ -21,7 +23,8 @@ namespace KosmoForumTests.FakeRepo
                     CategoryId = 1,
                     Content = "Zawartosc",
                     Date = DateTime.Now,
-                    Title = "Tytuł"
+                    Title = "Tytuł",
+                    UserId = 123
                 },
                 new ForumPost()
                 {
@@ -29,7 +32,8 @@ namespace KosmoForumTests.FakeRepo
                     CategoryId = 1,
                     Content = "Zawartosc forumposta",
                     Date = DateTime.Now,
-                    Title = "Tytuł forumposta"
+                    Title = "Tytuł forumposta",
+                    UserId = 53
                 },
                 new ForumPost()
                 {
@@ -37,7 +41,8 @@ namespace KosmoForumTests.FakeRepo
                     CategoryId = 2,
                     Content = "Zawartosc forumposta drugiego",
                     Date = DateTime.Now,
-                    Title = "Tytuł forumposta drugiego"
+                    Title = "Tytuł forumposta drugiego",
+                    UserId = 123
                 },
                 new ForumPost()
                 {
@@ -45,12 +50,32 @@ namespace KosmoForumTests.FakeRepo
                     CategoryId = 2,
                     Content = "Zawartosc forumposta trzeciego",
                     Date = DateTime.Now,
-                    Title = "Tytuł forumposta trzeciego"
+                    Title = "Tytuł forumposta trzeciego",
+                    UserId = 10
                 }
             };
 
             dummyForumPostsDtos = new List<ForumPostDto>();
             MapForumPostToForumPostDto();
+
+            dummyForumPostCreateDto = new ForumPostCreateDto()
+            {
+                CategoryId = 5,
+                Content = "Dwdwdw",
+                Title = "Tytul",
+                Images = new List<ImageCreateDto>()
+            };
+
+            dummyForumPostUpdateDto = new ForumPostUpdateDto()
+            {
+                Id = 10,
+                CategoryId = 7,
+                Content = "Dwdwdwd",
+                Title = "Tytul",
+                UserId = 10,
+                Images = new List<ImageDto>()
+            };
+
         }
 
         private void MapForumPostToForumPostDto()
@@ -63,7 +88,8 @@ namespace KosmoForumTests.FakeRepo
                     CategoryId = dummyForumPosts[i].CategoryId,
                     Content = dummyForumPosts[i].Content,
                     Date = dummyForumPosts[i].Date,
-                    Title = dummyForumPosts[i].Title
+                    Title = dummyForumPosts[i].Title,
+                    UserId = dummyForumPosts[i].UserId
                 });
             }
         }
